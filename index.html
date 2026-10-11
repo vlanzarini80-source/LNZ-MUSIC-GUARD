@@ -4,108 +4,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LNZ MUSIC GUARD</title>
+<meta name="theme-color" content="#101d36">
+<title>LNZ MUSIC GUARD | Analisi automatica</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#0b1120;color:#f8fafc;font-family:Arial,sans-serif}
-header{padding:28px 16px;text-align:center;background:#17243d}
-h1{color:#38bdf8;margin:0;font-size:29px}
-header p{color:#cbd5e1}
-main{max-width:680px;margin:auto;padding:18px}
-section{background:#1e293b;padding:20px;border-radius:14px;margin-bottom:18px}
-h2{font-size:19px;color:#7dd3fc}
-label{display:block;margin:16px 0 7px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #475569;border-radius:8px;background:#0f172a;color:white;font-size:16px}
-textarea{min-height:125px;resize:vertical}
-audio{width:100%;margin-top:15px}
-button{width:100%;background:#0284c7;color:white;border:0;border-radius:9px;padding:15px;font-size:16px;font-weight:bold;margin-top:18px}
-#risultato{margin-top:17px;line-height:1.6}
-small{color:#cbd5e1}
-footer{text-align:center;padding:25px;color:#94a3b8}
+body{margin:0;background:#0b1120;color:#f8fafc;font-family:Arial,Helvetica,sans-serif;line-height:1.5}
+header{background:#182744;text-align:center;padding:30px 16px}
+h1{font-size:clamp(25px,6vw,36px);color:#38bdf8;margin:0}
+header p{color:#cbd5e1;margin:10px 0}
+main{max-width:740px;margin:0 auto;padding:18px}
+section{background:#1e293b;border-radius:16px;padding:20px;margin:0 0 18px}
+h2{font-size:21px;color:#7dd3fc;margin-top:0}
+small,.muted{color:#cbd5e1}
+label{display:block;margin:12px 0}
+input[type=file]{display:block;width:100%;padding:13px;background:#0f172a;color:white;border:1px solid #475569;border-radius:9px}
+audio{width:100%;margin-top:16px}
+button{width:100%;border:0;border-radius:10px;padding:16px;margin-top:16px;font-size:17px;font-weight:bold;background:#0284c7;color:white;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.secondary{background:#334155}
+#status{margin-top:14px;min-height:24px;color:#bae6fd}
+#metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:13px;min-width:0}
+.metric strong{display:block;font-size:19px;color:#f8fafc;overflow-wrap:anywhere}
+.metric span{font-size:13px;color:#cbd5e1}
+canvas{display:block;width:100%;height:130px;border-radius:9px;background:#0f172a;margin:16px 0}
+.notice{border-left:3px solid #38bdf8;padding:10px 12px;background:#12253a;border-radius:6px}
+footer{text-align:center;color:#94a3b8;padding:20px 16px 38px}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <header>
-<h1>🎵 LNZ MUSIC GUARD</h1>
-<p>Proteggi e analizza la tua musica originale</p>
-<small>Valentino Lanzarini | Versione 0.1</small>
+<h1>♫ LNZ MUSIC GUARD</h1>
+<p>Analisi audio automatica, senza copiare testi</p>
+<small>Valentino Lanzarini · Versione 0.2</small>
 </header>
 <main>
 <section>
 <h2>1. Carica la tua canzone</h2>
-<label>File musicale</label>
-<input type="file" id="audiofile" accept="audio/*">
-<audio id="player" controls></audio>
-<p id="nomefile"></p>
-<label>Lingua della canzone</label>
-<select id="lingua">
-<option value="it">Italiano</option>
-<option value="en">Inglese</option>
-<option value="es">Spagnolo</option>
-<option value="fr">Francese</option>
-<option value="de">Tedesco</option>
-<option value="other">Altra lingua</option>
-</select>
+<label for="audiofile">Seleziona un file musicale MP3, WAV, M4A o altro formato audio supportato dal browser.</label>
+<input type="file" id="audiofile" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
+<p id="nomefile" class="muted">Nessun file selezionato</p>
+<audio id="player" controls preload="metadata"></audio>
+<button id="analyze" disabled>Analizza automaticamente</button>
+<div id="status" role="status" aria-live="polite">Seleziona una canzone per iniziare.</div>
 </section>
-
-<section>
-<h2>2. Testo della canzone</h2>
-<label>Incolla il testo originale</label>
-<textarea id="testo" placeholder="Inserisci qui il testo della tua canzone..."></textarea>
-<small>La trascrizione automatica dell'audio sarà aggiunta in una versione successiva.</small>
+<section id="report" hidden>
+<h2>2. Rapporto automatico</h2>
+<div id="metrics"></div>
+<h3>Profilo dell'energia nel tempo</h3>
+<canvas id="wave" aria-label="Grafico dell'energia audio" role="img"></canvas>
+<p class="muted">Questi sono parametri del segnale audio calcolati realmente sul dispositivo, non una verifica di plagio.</p>
+<button id="download" class="secondary">Scarica il rapporto JSON</button>
 </section>
-
 <section>
-<h2>3. Verifica somiglianza</h2>
-<label>Testo con cui effettuare il confronto</label>
-<textarea id="confronto" placeholder="Incolla un secondo testo da confrontare..."></textarea>
-<button onclick="analizza()">Analizza somiglianza</button>
-<div id="risultato" role="status"></div>
+<h2>3. Analisi musicale globale</h2>
+<p class="notice"><strong>Non ancora attiva:</strong> trascrizione automatica delle parole cantate, riconoscimento della lingua, confronto con canzoni online e ricerca di possibili somiglianze melodiche.</p>
+<p class="muted">Queste funzioni richiedono motori di riconoscimento, cataloghi accessibili e un backend sicuro. Nessun risultato online viene simulato.</p>
 </section>
-
 <section>
-<h2>🌍 Ricerca musicale globale</h2>
-<p>Funzione in sviluppo: riconoscimento musicale e confronto con cataloghi online autorizzati, anche in base alla lingua.</p>
-<small>La ricerca online non è ancora attiva. Non viene effettuata alcuna verifica automatica del copyright.</small>
+<h2>Privacy e limiti</h2>
+<p>La versione 0.2 analizza il file direttamente nel browser. Non carica l'audio su un server. L'impronta SHA-256 identifica il file esatto, non brani con melodie simili. Il rapporto non attesta originalità, proprietà o assenza di violazioni del copyright.</p>
 </section>
 </main>
 <footer>© 2026 LNZ MUSIC GUARD</footer>
 <script>
-let audioURL=null;
-const fileInput=document.getElementById("audiofile");
-fileInput.addEventListener("change",function(){
- const file=this.files[0];
- if(audioURL) URL.revokeObjectURL(audioURL);
- if(!file)return;
- if(!file.type.startsWith("audio/")){
-  alert("Seleziona un file audio valido.");
+"use strict";
+const input=document.getElementById("audiofile");
+const player=document.getElementById("player");
+const button=document.getElementById("analyze");
+const status=document.getElementById("status");
+const report=document.getElementById("report");
+const metrics=document.getElementById("metrics");
+const canvas=document.getElementById("wave");
+const download=document.getElementById("download");
+let objectUrl=null,currentReport=null,energyProfile=[];
+
+function setStatus(message){
+ status.textContent=message;
+}
+function db(value){
+ return value>0?20*Math.log10(value):-120;
+}
+function fmt(value,decimals=1){
+ return Number(value).toFixed(decimals);
+}
+function addMetric(title,value){
+ const cell=document.createElement("div");
+ cell.className="metric";
+ const name=document.createElement("span");
+ name.textContent=title;
+ const val=document.createElement("strong");
+ val.textContent=value;
+ cell.append(name,val);
+ metrics.appendChild(cell);
+}
+
+input.addEventListener("change",()=>{
+ report.hidden=true;
+ currentReport=null;
+ energyProfile=[];
+ const file=input.files&&input.files[0];
+ if(objectUrl){
+  URL.revokeObjectURL(objectUrl);
+  objectUrl=null;
+ }
+ if(!file){
+  button.disabled=true;
+  player.removeAttribute("src");
+  player.load();
+  setStatus("Seleziona una canzone.");
   return;
  }
- audioURL=URL.createObjectURL(file);
- document.getElementById("player").src=audioURL;
- document.getElementById("nomefile").textContent=file.name;
+ const ext=/\.(mp3|wav|m4a|aac|ogg|flac|opus|webm)$/i.test(file.name);
+ if(!(file.type.startsWith("audio/")||ext)){
+  button.disabled=true;
+  setStatus("Il file selezionato non sembra audio.");
+  return;
+ }
+ objectUrl=URL.createObjectURL(file);
+ player.src=objectUrl;
+ document.getElementById("nomefile").textContent=
+ file.name+" · "+fmt(file.size/1048576,2)+" MB";
+ button.disabled=false;
+ setStatus("File pronto. Premi Analizza automaticamente.");
 });
-function parole(s){
- return (s.toLocaleLowerCase()
- .match(/[\p{L}\p{N}]+/gu)||[]);
-}
-function analizza(){
- const a=parole(document.getElementById("testo").value);
- const b=parole(document.getElementById("confronto").value);
- const output=document.getElementById("risultato");
- if(a.length<5||b.length<5){
-  output.textContent="Inserisci almeno 5 parole in ciascun testo.";
-  return;
+
+function drawProfile(values){
+ const ratio=Math.min(window.devicePixelRatio||1,2);
+ const width=Math.max(320,Math.round(canvas.getBoundingClientRect().width*ratio));
+ const height=130*ratio;
+ canvas.width=width;
+ canvas.height=height;
+ const g=canvas.getContext("2d");
+ g.clearRect(0,0,width,height);
+ g.fillStyle="#0f172a";
+ g.fillRect(0,0,width,height);
+ if(!values.length)return;
+ const maximum=Math.max(.001,...values);
+ const bins=Math.min(values.length,Math.floor(width/3));
+ g.fillStyle="#38bdf8";
+ for(let x=0;x<bins;x++){
+  const first=Math.floor(x*values.length/bins);
+  const last=Math.max(first+1,Math.floor((x+1)*values.length/bins));
+  let peak=0;
+  for(let j=first;j<last;j++){
+   peak=Math.max(peak,values[j]);
+  }
+  const h=Math.max(1,peak/maximum*(height-14*ratio));
+  g.fillRect(x*width/bins,height-h,Math.max(1,width/bins-1),h);
  }
- const A=new Set(a),B=new Set(b);
- let comuni=0;
- for(const p of A)if(B.has(p))comuni++;
- const totale=new Set([...A,...B]).size;
- const percentuale=100*comuni/totale;
- output.textContent="Somiglianza lessicale: "+
- percentuale.toFixed(1)+"%. Parole condivise: "+
- comuni+". Questo è un confronto locale di parole, non una misura di plagio o somiglianza musicale.";
 }
+function formatTime(seconds){
+ const s=Math.round(seconds);
+ return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+}
+async function sha256(file){
+ if(!crypto.subtle||file.size>25*1048576)return null;
+ const buf=await file.arrayBuffer();
+ const digest=await crypto.subtle.digest("SHA-256",buf);
+ return Array.from(new Uint8Array(digest))
+ .map(v=>v.toString(16).padStart(2,"0")).join("");
+}
+
+button.addEventListener("click",async()=>{
+ const file=input.files&&input.files[0];
+ if(!file)return;
+ button.disabled=true;
+ report.hidden=true;
+ setStatus("Decodifica della canzone in corso...");
+ let context;
+ try{
+  await new Promise(resolve=>setTimeout(resolve,60));
+  const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+  if(!AudioContextClass){
+   throw new Error("Browser senza supporto per la decodifica audio.");
+  }
+  context=new AudioContextClass();
+  const raw=await file.arrayBuffer();
+  const audio=await context.decodeAudioData(raw);
+  setStatus("Calcolo dei parametri reali del segnale...");
+  await new Promise(resolve=>setTimeout(resolve,60));
+
+  const left=audio.getChannelData(0);
+  const right=audio.numberOfChannels>1?
+    audio.getChannelData(1):left;
+  const frameSize=Math.max(256,Math.round(audio.sampleRate*.1));
+  const frames=Math.ceil(left.length/frameSize);
+  let sumSquares=0,samples=0,peak=0,silent=0;
+  const rmsValues=[];
+
+  for(let f=0;f<frames;f++){
+   const start=f*frameSize;
+   const end=Math.min(start+frameSize,left.length);
+   let square=0,count=0,localPeak=0;
+   for(let i=start;i<end;i+=4){
+    const v=(left[i]+right[i])*.5;
+    const abs=Math.abs(v);
+    square+=v*v;
+    count++;
+    if(abs>localPeak)localPeak=abs;
+   }
+   if(count===0)continue;
+   sumSquares+=square;
+   samples+=count;
+   peak=Math.max(peak,localPeak);
+   const value=Math.sqrt(square/count);
+   rmsValues.push(value);
+   if(db(value)<-45)silent++;
+  }
+
+  const active=rmsValues.filter(v=>db(v)>=-45)
+    .map(db).sort((a,b)=>a-b);
+  const percentile=p=>active[
+    Math.min(active.length-1,Math.floor((active.length-1)*p))
+  ];
+  const dynamic=active.length>10?
+    percentile(.9)-percentile(.1):null;
+
+  let hash=null;
+  try{
+   hash=await sha256(file);
+  }catch(e){
+   hash=null;
+  }
+
+  currentReport={
+   prodotto:"LNZ MUSIC GUARD",
+   versione:"0.2",
+   tipo:"analisi locale del segnale audio",
+   data_utc:new Date().toISOString(),
+   nome_file:file.name,
+   dimensione_byte:file.size,
+   durata_secondi:audio.duration,
+   canali:audio.numberOfChannels,
+   frequenza_campionamento_hz:audio.sampleRate,
+   picco_dbfs:db(peak),
+   livello_medio_rms_dbfs:db(Math.sqrt(sumSquares/Math.max(1,samples))),
+   percentuale_finestre_silenziose:100*silent/Math.max(1,rmsValues.length),
+   escursione_energetica_db:dynamic,
+   impronta_sha256:hash,
+   limiti:"Nessuna trascrizione vocale, ricerca su cataloghi, fingerprint melodica, certificazione di originalita o verifica copyright."
+  };
+
+  metrics.replaceChildren();
+  addMetric("Durata",formatTime(audio.duration));
+  addMetric("Frequenza di campionamento",
+    fmt(audio.sampleRate/1000,1)+" kHz");
+  addMetric("Canali",String(audio.numberOfChannels));
+  addMetric("Picco stimato",fmt(db(peak))+" dBFS");
+  addMetric("Livello medio RMS",
+    fmt(currentReport.livello_medio_rms_dbfs)+" dBFS");
+  addMetric("Finestre quasi silenziose",
+    fmt(currentReport.percentuale_finestre_silenziose)+"%");
+  addMetric("Escursione energetica (P90-P10)",
+    dynamic===null?"N/D":fmt(dynamic)+" dB");
+  addMetric("Impronta SHA-256",
+    hash?hash.substring(0,20)+"…":"Non calcolata");
+
+  energyProfile=rmsValues;
+  report.hidden=false;
+  drawProfile(energyProfile);
+  setStatus("Analisi locale completata. Il rapporto è disponibile qui sotto.");
+
+ }catch(error){
+  console.error(error);
+  setStatus("Impossibile analizzare questo file nel browser. Prova un MP3 o WAV. Dettaglio: "+
+   (error&&error.message?error.message:"errore sconosciuto"));
+ }finally{
+  if(context){
+   try{
+    await context.close();
+   }catch(e){}
+  }
+  button.disabled=false;
+ }
+});
+
+download.addEventListener("click",()=>{
+ if(!currentReport)return;
+ const blob=new Blob(
+  [JSON.stringify(currentReport,null,2)],
+  {type:"application/json"}
+ );
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="lnz-music-guard-rapporto.json";
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),10000);
+});
+
+window.addEventListener("resize",()=>{
+ if(!report.hidden)drawProfile(energyProfile);
+});
 </script>
 </body>
 </html>
