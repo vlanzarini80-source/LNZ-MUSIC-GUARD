@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LNZ MUSIC GUARD</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1120;color:#f8fafc;font-family:Arial,sans-serif}
+header{padding:28px 16px;text-align:center;background:#17243d}
+h1{color:#38bdf8;margin:0;font-size:29px}
+header p{color:#cbd5e1}
+main{max-width:680px;margin:auto;padding:18px}
+section{background:#1e293b;padding:20px;border-radius:14px;margin-bottom:18px}
+h2{font-size:19px;color:#7dd3fc}
+label{display:block;margin:16px 0 7px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #475569;border-radius:8px;background:#0f172a;color:white;font-size:16px}
+textarea{min-height:125px;resize:vertical}
+audio{width:100%;margin-top:15px}
+button{width:100%;background:#0284c7;color:white;border:0;border-radius:9px;padding:15px;font-size:16px;font-weight:bold;margin-top:18px}
+#risultato{margin-top:17px;line-height:1.6}
+small{color:#cbd5e1}
+footer{text-align:center;padding:25px;color:#94a3b8}
+</style>
+</head>
+<body>
+<header>
+<h1>🎵 LNZ MUSIC GUARD</h1>
+<p>Proteggi e analizza la tua musica originale</p>
+<small>Valentino Lanzarini | Versione 0.1</small>
+</header>
+<main>
+<section>
+<h2>1. Carica la tua canzone</h2>
+<label>File musicale</label>
+<input type="file" id="audiofile" accept="audio/*">
+<audio id="player" controls></audio>
+<p id="nomefile"></p>
+<label>Lingua della canzone</label>
+<select id="lingua">
+<option value="it">Italiano</option>
+<option value="en">Inglese</option>
+<option value="es">Spagnolo</option>
+<option value="fr">Francese</option>
+<option value="de">Tedesco</option>
+<option value="other">Altra lingua</option>
+</select>
+</section>
+
+<section>
+<h2>2. Testo della canzone</h2>
+<label>Incolla il testo originale</label>
+<textarea id="testo" placeholder="Inserisci qui il testo della tua canzone..."></textarea>
+<small>La trascrizione automatica dell'audio sarà aggiunta in una versione successiva.</small>
+</section>
+
+<section>
+<h2>3. Verifica somiglianza</h2>
+<label>Testo con cui effettuare il confronto</label>
+<textarea id="confronto" placeholder="Incolla un secondo testo da confrontare..."></textarea>
+<button onclick="analizza()">Analizza somiglianza</button>
+<div id="risultato" role="status"></div>
+</section>
+
+<section>
+<h2>🌍 Ricerca musicale globale</h2>
+<p>Funzione in sviluppo: riconoscimento musicale e confronto con cataloghi online autorizzati, anche in base alla lingua.</p>
+<small>La ricerca online non è ancora attiva. Non viene effettuata alcuna verifica automatica del copyright.</small>
+</section>
+</main>
+<footer>© 2026 LNZ MUSIC GUARD</footer>
+<script>
+let audioURL=null;
+const fileInput=document.getElementById("audiofile");
+fileInput.addEventListener("change",function(){
+ const file=this.files[0];
+ if(audioURL) URL.revokeObjectURL(audioURL);
+ if(!file)return;
+ if(!file.type.startsWith("audio/")){
+  alert("Seleziona un file audio valido.");
+  return;
+ }
+ audioURL=URL.createObjectURL(file);
+ document.getElementById("player").src=audioURL;
+ document.getElementById("nomefile").textContent=file.name;
+});
+function parole(s){
+ return (s.toLocaleLowerCase()
+ .match(/[\p{L}\p{N}]+/gu)||[]);
+}
+function analizza(){
+ const a=parole(document.getElementById("testo").value);
+ const b=parole(document.getElementById("confronto").value);
+ const output=document.getElementById("risultato");
+ if(a.length<5||b.length<5){
+  output.textContent="Inserisci almeno 5 parole in ciascun testo.";
+  return;
+ }
+ const A=new Set(a),B=new Set(b);
+ let comuni=0;
+ for(const p of A)if(B.has(p))comuni++;
+ const totale=new Set([...A,...B]).size;
+ const percentuale=100*comuni/totale;
+ output.textContent="Somiglianza lessicale: "+
+ percentuale.toFixed(1)+"%. Parole condivise: "+
+ comuni+". Questo è un confronto locale di parole, non una misura di plagio o somiglianza musicale.";
+}
+</script>
+</body>
+</html>
