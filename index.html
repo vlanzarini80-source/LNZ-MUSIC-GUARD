@@ -982,4 +982,79 @@ $('install').addEventListener('click',async () => {
 });
 </script>
 </body>
+<script>
+(function () {
+  const main = document.querySelector("main");
+  if (!main) return;
+
+  const section = document.createElement("section");
+  section.innerHTML = `
+    <h2>Riconoscimento vocale online</h2>
+    <p>Usa Layrix per cercare di riconoscere
+    le parole cantate.</p>
+
+    <a href="https://layrix.pro/en/lyrics"
+       target="_blank"
+       rel="noopener noreferrer"
+       style="display:block;background:#0284c7;
+       color:white;text-align:center;padding:15px;
+       border-radius:9px;text-decoration:none">
+       Apri riconoscimento Layrix
+    </a>
+
+    <p>Carica la canzone su Layrix, poi
+    torna qui e incolla il testo ottenuto.</p>
+
+    <textarea id="lnzExternalLyrics"
+      placeholder="Testo riconosciuto..."
+      style="width:100%;min-height:180px">
+    </textarea>
+
+    <button id="lnzImportLyrics">
+      Importa nel rapporto LNZ
+    </button>
+
+    <p id="lnzImportStatus"></p>
+
+    <small>Layrix è un servizio esterno.
+    Il caricamento dell'audio avviene
+    soltanto quando lo autorizzi tu.</small>
+  `;
+
+  main.appendChild(section);
+
+  document.getElementById("lnzImportLyrics")
+    .addEventListener("click", function () {
+      const text = document.getElementById(
+        "lnzExternalLyrics"
+      ).value.trim();
+
+      if (!text) {
+        document.getElementById(
+          "lnzImportStatus"
+        ).textContent = "Inserisci il testo riconosciuto.";
+        return;
+      }
+
+      document.getElementById("lyrics").value = text;
+      document.getElementById(
+        "lyricsPanel"
+      ).hidden = false;
+
+      document.getElementById(
+        "lyricsStatus"
+      ).textContent =
+        "Testo importato: verifica le parole ascoltando.";
+
+      document.getElementById(
+        "lnzImportStatus"
+      ).textContent = "Testo importato.";
+
+      document.getElementById(
+        "lyricsPanel"
+      ).scrollIntoView({behavior:"smooth"});
+    });
+})();
+</script>
+
 </html>
