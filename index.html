@@ -1,304 +1,607 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101d36">
-<title>LNZ MUSIC GUARD | Analisi automatica</title>
+<meta name="theme-color" content="#172744">
+<meta name="description" content="LNZ MUSIC GUARD: analisi audio e trascrizione automatica sperimentale delle canzoni.">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.svg" type="image/svg+xml">
+<title>LNZ MUSIC GUARD 0.3</title>
 <style>
+:root{color-scheme:dark;--base:#0b1120;--panel:#1e293b;--blue:#38bdf8;--muted:#cbd5e1}
 *{box-sizing:border-box}
-body{margin:0;background:#0b1120;color:#f8fafc;font-family:Arial,Helvetica,sans-serif;line-height:1.5}
-header{background:#182744;text-align:center;padding:30px 16px}
-h1{font-size:clamp(25px,6vw,36px);color:#38bdf8;margin:0}
-header p{color:#cbd5e1;margin:10px 0}
-main{max-width:740px;margin:0 auto;padding:18px}
-section{background:#1e293b;border-radius:16px;padding:20px;margin:0 0 18px}
-h2{font-size:21px;color:#7dd3fc;margin-top:0}
-small,.muted{color:#cbd5e1}
-label{display:block;margin:12px 0}
-input[type=file]{display:block;width:100%;padding:13px;background:#0f172a;color:white;border:1px solid #475569;border-radius:9px}
-audio{width:100%;margin-top:16px}
-button{width:100%;border:0;border-radius:10px;padding:16px;margin-top:16px;font-size:17px;font-weight:bold;background:#0284c7;color:white;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
+body{margin:0;background:var(--base);color:#f8fafc;font:16px/1.55 Arial,Helvetica,sans-serif}
+header{background:#182744;padding:28px 18px;text-align:center}
+h1{font-size:clamp(25px,6vw,35px);color:var(--blue);margin:0}
+header p{color:var(--muted);margin:9px 0}
+main{max-width:740px;margin:auto;padding:18px}
+section{background:var(--panel);border-radius:16px;padding:20px;margin-bottom:18px}
+h2{color:#7dd3fc;font-size:21px;margin:0 0 16px}
+h3{font-size:17px;margin:16px 0 10px}
+label{display:block;margin:12px 0 6px}
+input[type=file],select,textarea{width:100%;border:1px solid #475569;border-radius:10px;padding:12px;background:#0f172a;color:#f8fafc;font-size:16px}
+textarea{min-height:190px;resize:vertical}
+audio{width:100%;margin:15px 0}
+button{display:block;width:100%;border:0;border-radius:9px;margin-top:13px;padding:14px;font-weight:700;font-size:16px;background:#0284c7;color:white;cursor:pointer}
 button.secondary{background:#334155}
-#status{margin-top:14px;min-height:24px;color:#bae6fd}
+button:disabled{opacity:.48;cursor:not-allowed}
+.muted,small{color:var(--muted)}
+.notice{padding:12px;background:#112a3f;border-left:4px solid var(--blue);border-radius:7px}
+.warn{border-left-color:#fbbf24;background:#312b1d}
+#status{margin:14px 0 0;min-height:24px;color:#bae6fd;overflow-wrap:anywhere}
 #metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.metric{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:13px;min-width:0}
-.metric strong{display:block;font-size:19px;color:#f8fafc;overflow-wrap:anywhere}
-.metric span{font-size:13px;color:#cbd5e1}
-canvas{display:block;width:100%;height:130px;border-radius:9px;background:#0f172a;margin:16px 0}
-.notice{border-left:3px solid #38bdf8;padding:10px 12px;background:#12253a;border-radius:6px}
-footer{text-align:center;color:#94a3b8;padding:20px 16px 38px}
+.metric{background:#0f172a;border:1px solid #334155;border-radius:11px;padding:13px;min-width:0}
+.metric strong{display:block;font-size:19px;overflow-wrap:anywhere}
+.metric span{font-size:13px;color:var(--muted)}
+canvas{width:100%;height:125px;display:block;background:#0f172a;border-radius:8px}
+progress{width:100%;height:14px;accent-color:#38bdf8;margin-top:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.actions button{margin-top:8px}
+#lyricsStatus{white-space:pre-line;overflow-wrap:anywhere}
+footer{text-align:center;color:#94a3b8;padding:10px 20px 35px}
 [hidden]{display:none!important}
+@media(max-width:410px){
+ #metrics{grid-template-columns:1fr}
+ .actions{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <header>
 <h1>♫ LNZ MUSIC GUARD</h1>
-<p>Analisi audio automatica, senza copiare testi</p>
-<small>Valentino Lanzarini · Versione 0.2</small>
+<p>Analisi audio e trascrizione delle parole cantate</p>
+<small>Valentino Lanzarini · Versione 0.3 (sperimentale)</small>
 </header>
+
 <main>
 <section>
-<h2>1. Carica la tua canzone</h2>
-<label for="audiofile">Seleziona un file musicale MP3, WAV, M4A o altro formato audio supportato dal browser.</label>
-<input type="file" id="audiofile" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
-<p id="nomefile" class="muted">Nessun file selezionato</p>
+<h2>1. Carica una canzone</h2>
+<label for="file">File audio sul tuo dispositivo</label>
+<input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
+<p id="filename" class="muted">Nessun file selezionato.</p>
 <audio id="player" controls preload="metadata"></audio>
-<button id="analyze" disabled>Analizza automaticamente</button>
+
+<label for="mode">Quanto audio trascrivere?</label>
+<select id="mode">
+<option value="full">Intera canzone (può richiedere molto tempo)</option>
+<option value="30">Prova rapida: primi 30 secondi</option>
+</select>
+
+<button id="start" disabled>Analizza e trascrivi automaticamente</button>
+<button id="technical" class="secondary" disabled>Solo analisi audio (più veloce)</button>
+<button id="stop" class="secondary" hidden>Interrompi trascrizione</button>
 <div id="status" role="status" aria-live="polite">Seleziona una canzone per iniziare.</div>
+<progress id="progress" hidden></progress>
+<p class="muted"><small>Per trascrivere si scarica un modello AI multilingue. È necessaria una connessione Internet al primo utilizzo e il telefono potrebbe impiegare diversi minuti, fermarsi o esaurire la memoria. Nessun file audio viene caricato sui nostri server.</small></p>
 </section>
-<section id="report" hidden>
-<h2>2. Rapporto automatico</h2>
+
+<section id="technicalReport" hidden>
+<h2>2. Rapporto tecnico</h2>
 <div id="metrics"></div>
-<h3>Profilo dell'energia nel tempo</h3>
-<canvas id="wave" aria-label="Grafico dell'energia audio" role="img"></canvas>
-<p class="muted">Questi sono parametri del segnale audio calcolati realmente sul dispositivo, non una verifica di plagio.</p>
-<button id="download" class="secondary">Scarica il rapporto JSON</button>
+<h3>Energia nel tempo</h3>
+<canvas id="wave" role="img" aria-label="Grafico dell'energia nel tempo"></canvas>
+<p class="muted"><small>Picco e RMS sono stime del segnale decodificato. Non certificano la qualità del mastering.</small></p>
+<button id="json" class="secondary">Scarica rapporto JSON</button>
 </section>
+
+<section id="lyricsPanel" hidden>
+<h2>3. Testo riconosciuto dall'AI</h2>
+<p id="lyricsStatus" class="muted"></p>
+<label for="lyrics">Trascrizione automatica (puoi correggere eventuali errori)</label>
+<textarea id="lyrics" spellcheck="true"></textarea>
+<div class="actions">
+<button id="txt" class="secondary">Scarica testo TXT</button>
+<button id="copy" class="secondary">Copia testo</button>
+</div>
+<p class="notice warn"><strong>Attenzione:</strong> i modelli vocali possono sbagliare o inventare parole sulla musica, durante le pause o con effetti vocali. La lingua viene selezionata automaticamente dal modello, ma questa versione non ne fornisce una classificazione verificata. Controlla il risultato ascoltando la canzone.</p>
+</section>
+
 <section>
-<h2>3. Analisi musicale globale</h2>
-<p class="notice"><strong>Non ancora attiva:</strong> trascrizione automatica delle parole cantate, riconoscimento della lingua, confronto con canzoni online e ricerca di possibili somiglianze melodiche.</p>
-<p class="muted">Queste funzioni richiedono motori di riconoscimento, cataloghi accessibili e un backend sicuro. Nessun risultato online viene simulato.</p>
+<h2>4. Ricerca musicale globale</h2>
+<p class="notice"><strong>Ancora da integrare.</strong> Non abbiamo accesso automatico al catalogo mondiale delle registrazioni e non possiamo confrontare questa canzone con tutti i brani pubblicati. Servirà un servizio esterno di fingerprint audio e un backend con credenziali protette.</p>
+<p class="muted">Un'impronta SHA-256 identifica soltanto file identici byte per byte; non individua cover, melodie somiglianti o presunti plagi.</p>
 </section>
+
+<section>
+<h2>5. Installa sul telefono</h2>
+<p>Apri questo sito in <strong>Chrome</strong> su Android. Dal menu ⋮ scegli <strong>Installa app</strong> oppure <strong>Aggiungi a schermata Home</strong>, secondo le opzioni disponibili.</p>
+<button id="install" class="secondary" hidden>Installa LNZ MUSIC GUARD</button>
+<p class="muted"><small>La schermata principale può essere disponibile offline dopo una visita. La prima trascrizione richiede Internet; la disponibilità offline del modello AI non è garantita.</small></p>
+</section>
+
 <section>
 <h2>Privacy e limiti</h2>
-<p>La versione 0.2 analizza il file direttamente nel browser. Non carica l'audio su un server. L'impronta SHA-256 identifica il file esatto, non brani con melodie simili. Il rapporto non attesta originalità, proprietà o assenza di violazioni del copyright.</p>
+<p>L'audio è elaborato nel browser. Per la trascrizione, il browser scarica componenti software e pesi del modello da servizi esterni. Non viene inviato il file audio ai nostri server. I risultati non sono una verifica legale dell'originalità o del copyright. È una versione sperimentale da collaudare sul dispositivo.</p>
 </section>
 </main>
+
 <footer>© 2026 LNZ MUSIC GUARD</footer>
+
 <script>
-"use strict";
-const input=document.getElementById("audiofile");
-const player=document.getElementById("player");
-const button=document.getElementById("analyze");
-const status=document.getElementById("status");
-const report=document.getElementById("report");
-const metrics=document.getElementById("metrics");
-const canvas=document.getElementById("wave");
-const download=document.getElementById("download");
-let objectUrl=null,currentReport=null,energyProfile=[];
+'use strict';
 
-function setStatus(message){
- status.textContent=message;
-}
-function db(value){
- return value>0?20*Math.log10(value):-120;
-}
-function fmt(value,decimals=1){
- return Number(value).toFixed(decimals);
-}
-function addMetric(title,value){
- const cell=document.createElement("div");
- cell.className="metric";
- const name=document.createElement("span");
- name.textContent=title;
- const val=document.createElement("strong");
- val.textContent=value;
- cell.append(name,val);
- metrics.appendChild(cell);
+const $ = id => document.getElementById(id);
+const fileInput = $('file');
+const player = $('player');
+const start = $('start');
+const technical = $('technical');
+const stop = $('stop');
+const status = $('status');
+
+let mediaUrl = null;
+let reportData = null;
+let profile = [];
+let audioDecoded = null;
+let worker = null;
+let runId = 0;
+let busy = false;
+let installEvent = null;
+
+const setStatus = s => { status.textContent = s; };
+const db = x => x > 0 ? 20 * Math.log10(x) : -120;
+const fmt = (x,n=1) => Number(x).toFixed(n);
+
+const fmtTime = x => {
+  let s = Math.round(x);
+  return Math.floor(s/60) + ':' +
+    String(s%60).padStart(2,'0');
+};
+
+function setBusy(value) {
+  busy = value;
+  start.disabled = value || !fileInput.files.length;
+  technical.disabled = value || !fileInput.files.length;
+  fileInput.disabled = value;
+  stop.hidden = !value;
 }
 
-input.addEventListener("change",()=>{
- report.hidden=true;
- currentReport=null;
- energyProfile=[];
- const file=input.files&&input.files[0];
- if(objectUrl){
-  URL.revokeObjectURL(objectUrl);
-  objectUrl=null;
- }
- if(!file){
-  button.disabled=true;
-  player.removeAttribute("src");
-  player.load();
-  setStatus("Seleziona una canzone.");
-  return;
- }
- const ext=/\.(mp3|wav|m4a|aac|ogg|flac|opus|webm)$/i.test(file.name);
- if(!(file.type.startsWith("audio/")||ext)){
-  button.disabled=true;
-  setStatus("Il file selezionato non sembra audio.");
-  return;
- }
- objectUrl=URL.createObjectURL(file);
- player.src=objectUrl;
- document.getElementById("nomefile").textContent=
- file.name+" · "+fmt(file.size/1048576,2)+" MB";
- button.disabled=false;
- setStatus("File pronto. Premi Analizza automaticamente.");
+function addMetric(k,v) {
+  const el = document.createElement('div');
+  el.className = 'metric';
+  const a = document.createElement('span');
+  const b = document.createElement('strong');
+  a.textContent = k;
+  b.textContent = v;
+  el.append(a,b);
+  $('metrics').appendChild(el);
+}
+
+function draw(values) {
+  const c = $('wave');
+  const r = Math.min(window.devicePixelRatio || 1,2);
+  let w = Math.max(260,Math.floor(c.clientWidth*r));
+  let h = 125*r;
+  c.width=w;
+  c.height=h;
+  let g=c.getContext('2d');
+  g.fillStyle='#0f172a';
+  g.fillRect(0,0,w,h);
+  if(!values.length)return;
+
+  let max=Math.max(.001,...values);
+  let n=Math.min(values.length,Math.floor(w/3));
+  g.fillStyle='#38bdf8';
+
+  for(let i=0;i<n;i++){
+    let a=Math.floor(i*values.length/n);
+    let b=Math.max(a+1,Math.floor((i+1)*values.length/n));
+    let p=0;
+    for(let j=a;j<b;j++){
+      p=Math.max(p,values[j]);
+    }
+    let y=Math.max(1,p/max*(h-14*r));
+    g.fillRect(i*w/n,h-y,Math.max(1,w/n-1),y);
+  }
+}
+
+function download(name,body,type) {
+  let url=URL.createObjectURL(
+    new Blob([body],{type})
+  );
+  let a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+}
+
+async function getHash(file) {
+  if(!crypto.subtle || file.size>96*1048576)return null;
+  try {
+    const h=await crypto.subtle.digest(
+      'SHA-256',await file.arrayBuffer()
+    );
+    return Array.from(new Uint8Array(h))
+      .map(x=>x.toString(16).padStart(2,'0'))
+      .join('');
+  }catch{
+    return null;
+  }
+}
+
+function resetFile() {
+  runId++;
+  if(worker){
+    worker.terminate();
+    worker=null;
+  }
+  audioDecoded=null;
+  reportData=null;
+  profile=[];
+  $('technicalReport').hidden=true;
+  $('lyricsPanel').hidden=true;
+  $('progress').hidden=true;
+  setBusy(false);
+  if(mediaUrl){
+    URL.revokeObjectURL(mediaUrl);
+    mediaUrl=null;
+  }
+}
+
+fileInput.addEventListener('change',()=>{
+  resetFile();
+  const f=fileInput.files[0];
+
+  if(!f){
+    player.removeAttribute('src');
+    player.load();
+    $('filename').textContent='Nessun file selezionato.';
+    setStatus('Seleziona una canzone.');
+    return;
+  }
+
+  if(!(f.type.startsWith('audio/') ||
+    /\.(wav|mp3|m4a|aac|ogg|flac|opus)$/i.test(f.name))){
+    setStatus('Formato non riconosciuto come audio.');
+    start.disabled=technical.disabled=true;
+    return;
+  }
+
+  mediaUrl=URL.createObjectURL(f);
+  player.src=mediaUrl;
+  $('filename').textContent=f.name+' · '+
+    fmt(f.size/1048576,2)+' MB';
+  setStatus('Pronto. Premi Analizza e trascrivi automaticamente.');
 });
 
-function drawProfile(values){
- const ratio=Math.min(window.devicePixelRatio||1,2);
- const width=Math.max(320,Math.round(canvas.getBoundingClientRect().width*ratio));
- const height=130*ratio;
- canvas.width=width;
- canvas.height=height;
- const g=canvas.getContext("2d");
- g.clearRect(0,0,width,height);
- g.fillStyle="#0f172a";
- g.fillRect(0,0,width,height);
- if(!values.length)return;
- const maximum=Math.max(.001,...values);
- const bins=Math.min(values.length,Math.floor(width/3));
- g.fillStyle="#38bdf8";
- for(let x=0;x<bins;x++){
-  const first=Math.floor(x*values.length/bins);
-  const last=Math.max(first+1,Math.floor((x+1)*values.length/bins));
-  let peak=0;
-  for(let j=first;j<last;j++){
-   peak=Math.max(peak,values[j]);
-  }
-  const h=Math.max(1,peak/maximum*(height-14*ratio));
-  g.fillRect(x*width/bins,height-h,Math.max(1,width/bins-1),h);
- }
-}
-function formatTime(seconds){
- const s=Math.round(seconds);
- return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
-}
-async function sha256(file){
- if(!crypto.subtle||file.size>25*1048576)return null;
- const buf=await file.arrayBuffer();
- const digest=await crypto.subtle.digest("SHA-256",buf);
- return Array.from(new Uint8Array(digest))
- .map(v=>v.toString(16).padStart(2,"0")).join("");
-}
+async function decodeFile(f) {
+  if(audioDecoded)return audioDecoded;
+  const C=window.AudioContext || window.webkitAudioContext;
+  if(!C)throw Error('Browser senza Web Audio API.');
 
-button.addEventListener("click",async()=>{
- const file=input.files&&input.files[0];
- if(!file)return;
- button.disabled=true;
- report.hidden=true;
- setStatus("Decodifica della canzone in corso...");
- let context;
- try{
-  await new Promise(resolve=>setTimeout(resolve,60));
-  const AudioContextClass=window.AudioContext||window.webkitAudioContext;
-  if(!AudioContextClass){
-   throw new Error("Browser senza supporto per la decodifica audio.");
-  }
-  context=new AudioContextClass();
-  const raw=await file.arrayBuffer();
-  const audio=await context.decodeAudioData(raw);
-  setStatus("Calcolo dei parametri reali del segnale...");
-  await new Promise(resolve=>setTimeout(resolve,60));
-
-  const left=audio.getChannelData(0);
-  const right=audio.numberOfChannels>1?
-    audio.getChannelData(1):left;
-  const frameSize=Math.max(256,Math.round(audio.sampleRate*.1));
-  const frames=Math.ceil(left.length/frameSize);
-  let sumSquares=0,samples=0,peak=0,silent=0;
-  const rmsValues=[];
-
-  for(let f=0;f<frames;f++){
-   const start=f*frameSize;
-   const end=Math.min(start+frameSize,left.length);
-   let square=0,count=0,localPeak=0;
-   for(let i=start;i<end;i+=4){
-    const v=(left[i]+right[i])*.5;
-    const abs=Math.abs(v);
-    square+=v*v;
-    count++;
-    if(abs>localPeak)localPeak=abs;
-   }
-   if(count===0)continue;
-   sumSquares+=square;
-   samples+=count;
-   peak=Math.max(peak,localPeak);
-   const value=Math.sqrt(square/count);
-   rmsValues.push(value);
-   if(db(value)<-45)silent++;
-  }
-
-  const active=rmsValues.filter(v=>db(v)>=-45)
-    .map(db).sort((a,b)=>a-b);
-  const percentile=p=>active[
-    Math.min(active.length-1,Math.floor((active.length-1)*p))
-  ];
-  const dynamic=active.length>10?
-    percentile(.9)-percentile(.1):null;
-
-  let hash=null;
+  let context=new C();
   try{
-   hash=await sha256(file);
-  }catch(e){
-   hash=null;
+    const result=await context.decodeAudioData(
+      await f.arrayBuffer()
+    );
+    audioDecoded=result;
+    return result;
+  }finally{
+    await context.close().catch(()=>{});
+  }
+}
+
+function calcStats(a,f,hash) {
+  const channels=a.numberOfChannels;
+  const len=a.length;
+  const block=Math.max(256,Math.round(a.sampleRate*.1));
+  const arrays=Array.from(
+    {length:channels},(_,i)=>a.getChannelData(i)
+  );
+
+  let sum=0,count=0,peak=0,silent=0;
+  let frameValues=[];
+
+  for(let i=0;i<len;i+=block){
+    let n=0,q=0;
+
+    for(let j=i;j<Math.min(len,i+block);j+=4){
+      let v=0;
+      for(const channel of arrays)v+=channel[j];
+      v/=channels;
+      peak=Math.max(peak,Math.abs(v));
+      q+=v*v;
+      n++;
+    }
+
+    if(n){
+      count+=n;
+      sum+=q;
+      let rms=Math.sqrt(q/n);
+      frameValues.push(rms);
+      if(db(rms)<-45)silent++;
+    }
   }
 
-  currentReport={
-   prodotto:"LNZ MUSIC GUARD",
-   versione:"0.2",
-   tipo:"analisi locale del segnale audio",
-   data_utc:new Date().toISOString(),
-   nome_file:file.name,
-   dimensione_byte:file.size,
-   durata_secondi:audio.duration,
-   canali:audio.numberOfChannels,
-   frequenza_campionamento_hz:audio.sampleRate,
-   picco_dbfs:db(peak),
-   livello_medio_rms_dbfs:db(Math.sqrt(sumSquares/Math.max(1,samples))),
-   percentuale_finestre_silenziose:100*silent/Math.max(1,rmsValues.length),
-   escursione_energetica_db:dynamic,
-   impronta_sha256:hash,
-   limiti:"Nessuna trascrizione vocale, ricerca su cataloghi, fingerprint melodica, certificazione di originalita o verifica copyright."
+  const p=frameValues
+    .filter(x=>db(x)>=-45)
+    .map(db).sort((x,y)=>x-y);
+
+  const pct=v=>p[
+    Math.min(p.length-1,Math.floor((p.length-1)*v))
+  ];
+
+  let dynamic=p.length>10?pct(.9)-pct(.1):null;
+
+  let stats={
+    versione:'0.3',
+    file:f.name,
+    size_bytes:f.size,
+    date_utc:new Date().toISOString(),
+    durata_s:a.duration,
+    canali:channels,
+    campionamento_hz:a.sampleRate,
+    picco_stimato_dbfs:db(peak),
+    rms_stimato_dbfs:db(Math.sqrt(sum/Math.max(count,1))),
+    finestre_silenziose_percento:
+      100*silent/Math.max(1,frameValues.length),
+    escursione_energetica_db:dynamic,
+    sha256:hash,
+    trascrizione:null,
+    avvertenza:'Nessun confronto online con cataloghi, nessun giudizio su plagio o copyright.'
   };
 
-  metrics.replaceChildren();
-  addMetric("Durata",formatTime(audio.duration));
-  addMetric("Frequenza di campionamento",
-    fmt(audio.sampleRate/1000,1)+" kHz");
-  addMetric("Canali",String(audio.numberOfChannels));
-  addMetric("Picco stimato",fmt(db(peak))+" dBFS");
-  addMetric("Livello medio RMS",
-    fmt(currentReport.livello_medio_rms_dbfs)+" dBFS");
-  addMetric("Finestre quasi silenziose",
-    fmt(currentReport.percentuale_finestre_silenziose)+"%");
-  addMetric("Escursione energetica (P90-P10)",
-    dynamic===null?"N/D":fmt(dynamic)+" dB");
-  addMetric("Impronta SHA-256",
-    hash?hash.substring(0,20)+"…":"Non calcolata");
+  return {stats,frameValues};
+}
 
-  energyProfile=rmsValues;
-  report.hidden=false;
-  drawProfile(energyProfile);
-  setStatus("Analisi locale completata. Il rapporto è disponibile qui sotto.");
+async function technicalAnalysis(f,id) {
+  setStatus('Decodifica e analisi audio in corso...');
 
- }catch(error){
-  console.error(error);
-  setStatus("Impossibile analizzare questo file nel browser. Prova un MP3 o WAV. Dettaglio: "+
-   (error&&error.message?error.message:"errore sconosciuto"));
- }finally{
-  if(context){
-   try{
-    await context.close();
-   }catch(e){}
+  const hash=await getHash(f);
+  if(id!==runId)return null;
+
+  const a=await decodeFile(f);
+  if(id!==runId)return null;
+
+  const res=calcStats(a,f,hash);
+  reportData=res.stats;
+  profile=res.frameValues;
+  $('metrics').replaceChildren();
+
+  addMetric('Durata',fmtTime(a.duration));
+  addMetric('Frequenza campionamento',
+    fmt(a.sampleRate/1000,1)+' kHz');
+  addMetric('Canali',String(a.numberOfChannels));
+  addMetric('Picco stimato',
+    fmt(reportData.picco_stimato_dbfs)+' dBFS');
+  addMetric('Livello RMS stimato',
+    fmt(reportData.rms_stimato_dbfs)+' dBFS');
+  addMetric('Quasi silenzio',
+    fmt(reportData.finestre_silenziose_percento)+'%');
+  addMetric('Escursione energetica',
+    res.stats.escursione_energetica_db==null
+      ? 'N/D'
+      : fmt(res.stats.escursione_energetica_db)+' dB');
+  addMetric('SHA-256',
+    hash?hash.slice(0,20)+'…':'Non disponibile');
+
+  $('technicalReport').hidden=false;
+  draw(profile);
+  return a;
+}
+
+async function resample16k(a,seconds) {
+  const duration=Math.min(a.duration,seconds);
+  const count=Math.floor(duration*16000);
+  if(!count)throw Error('Audio troppo corto.');
+
+  const O=window.OfflineAudioContext ||
+    window.webkitOfflineAudioContext;
+  if(!O)throw Error('OfflineAudioContext non disponibile.');
+
+  const off=new O(1,count,16000);
+  const src=off.createBufferSource();
+  src.buffer=a;
+  src.connect(off.destination);
+  src.start(0);
+
+  const rendered=await off.startRendering();
+  return new Float32Array(rendered.getChannelData(0));
+}
+
+function startWorker(samples,id) {
+  return new Promise((resolve,reject)=>{
+    if(!window.Worker){
+      reject(Error('Web Worker non supportati.'));
+      return;
+    }
+
+    let w=new Worker('./asr-worker.js',{type:'module'});
+    worker=w;
+
+    w.onmessage=e=>{
+      if(id!==runId)return;
+      const msg=e.data||{};
+
+      if(msg.type==='progress'){
+        if(msg.message)setStatus(msg.message);
+
+        if(Number.isFinite(msg.percent)){
+          $('progress').hidden=false;
+          $('progress').value=msg.percent;
+          $('progress').max=100;
+        }else{
+          $('progress').removeAttribute('value');
+        }
+
+      }else if(msg.type==='done'){
+        worker.terminate();
+        worker=null;
+        resolve(msg.text||'');
+
+      }else if(msg.type==='error'){
+        worker.terminate();
+        worker=null;
+        reject(Error(msg.message||'Errore trascrizione.'));
+      }
+    };
+
+    w.onerror=e=>{
+      w.terminate();
+      worker=null;
+      reject(Error(
+        'Impossibile avviare il motore di trascrizione. Controlla Internet e il browser.'
+      ));
+    };
+
+    w.postMessage(
+      {type:'transcribe',samples},
+      [samples.buffer]
+    );
+  });
+}
+
+async function run(withSpeech) {
+  const f=fileInput.files[0];
+  if(!f||busy)return;
+
+  const id=++runId;
+  setBusy(true);
+  $('progress').hidden=true;
+  $('lyricsPanel').hidden=true;
+
+  try{
+    const a=await technicalAnalysis(f,id);
+    if(!a||id!==runId)return;
+
+    if(!withSpeech){
+      setStatus('Analisi tecnica completata.');
+      return;
+    }
+
+    setStatus('Preparo l’audio mono a 16 kHz...');
+    await new Promise(r=>setTimeout(r,25));
+
+    const seconds=$('mode').value==='30'
+      ?30:a.duration;
+
+    const samples=await resample16k(a,seconds);
+    if(id!==runId)return;
+
+    setStatus('Avvio Whisper. Primo caricamento: download del modello AI...');
+    $('progress').hidden=false;
+    $('progress').removeAttribute('value');
+
+    const text=await startWorker(samples,id);
+    if(id!==runId)return;
+
+    $('lyrics').value=text;
+    $('lyricsPanel').hidden=false;
+
+    reportData.trascrizione=text;
+    reportData.trascrizione_parziale=seconds<a.duration;
+    reportData.modello='onnx-community/whisper-tiny (Transformers.js, CPU/WASM)';
+
+    $('lyricsStatus').textContent=text
+      ? 'Trascrizione '+
+        (seconds<a.duration
+          ? 'dei primi 30 secondi'
+          : 'del brano')+
+        ' completata. Ricontrolla ascoltando.'
+      : 'Il modello non ha riconosciuto parole. Riprova con audio vocale più chiaro.';
+
+    setStatus('Analisi tecnica e tentativo di trascrizione completati.');
+
+  }catch(e){
+    console.error(e);
+    setStatus(
+      'Analisi non completata: '+
+      (e?.message||String(e))+
+      '. Il rapporto tecnico, se presente, rimane utilizzabile.'
+    );
+
+    if(withSpeech&&reportData){
+      $('lyricsPanel').hidden=false;
+      $('lyricsStatus').textContent=
+        'Trascrizione non riuscita su questo dispositivo. Nessun testo è stato inventato.';
+      $('lyrics').value='';
+    }
+
+  }finally{
+    if(id===runId){
+      $('progress').hidden=true;
+      setBusy(false);
+      stop.hidden=true;
+    }
   }
-  button.disabled=false;
- }
+}
+
+start.addEventListener('click',()=>run(true));
+technical.addEventListener('click',()=>run(false));
+
+stop.addEventListener('click',()=>{
+  runId++;
+  if(worker){
+    worker.terminate();
+    worker=null;
+  }
+  setBusy(false);
+  $('progress').hidden=true;
+  setStatus(
+    'Trascrizione interrotta. Il rapporto tecnico eventualmente creato è ancora disponibile.'
+  );
 });
 
-download.addEventListener("click",()=>{
- if(!currentReport)return;
- const blob=new Blob(
-  [JSON.stringify(currentReport,null,2)],
-  {type:"application/json"}
- );
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download="lnz-music-guard-rapporto.json";
- document.body.appendChild(a);
- a.click();
- a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),10000);
+$('json').addEventListener('click',()=>{
+  if(!reportData)return;
+  reportData.trascrizione=$('lyricsPanel').hidden
+    ?null:$('lyrics').value;
+
+  download(
+    'lnz-music-guard-rapporto-v03.json',
+    JSON.stringify(reportData,null,2),
+    'application/json'
+  );
 });
 
-window.addEventListener("resize",()=>{
- if(!report.hidden)drawProfile(energyProfile);
+$('txt').addEventListener('click',()=>{
+  download(
+    'lnz-trascrizione.txt',
+    $('lyrics').value,
+    'text/plain;charset=utf-8'
+  );
+});
+
+$('copy').addEventListener('click',async()=>{
+  try{
+    await navigator.clipboard.writeText(
+      $('lyrics').value
+    );
+    $('lyricsStatus').textContent=
+      'Testo copiato. Controlla sempre le parole riconosciute.';
+  }catch{
+    $('lyricsStatus').textContent=
+      'Copia non disponibile: usa Seleziona tutto nel riquadro.';
+  }
+});
+
+window.addEventListener('resize',()=>{
+  if(!$('technicalReport').hidden)draw(profile);
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .catch(e=>console.warn('SW:',e));
+  });
+}
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  installEvent=e;
+  $('install').hidden=false;
+});
+
+$('install').addEventListener('click',async()=>{
+  if(!installEvent)return;
+  const e=installEvent;
+  installEvent=null;
+  $('install').hidden=true;
+  await e.prompt();
 });
 </script>
 </body>
