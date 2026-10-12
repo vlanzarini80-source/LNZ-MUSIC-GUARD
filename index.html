@@ -1027,5 +1027,210 @@ $('lnz-refresh').addEventListener('click',async()=>{
   );
 })();
 </script>
+
+<!-- LNZ MUSIC GUARD - Schermata risultato audio -->
+<style>
+#lnz-origin-result[hidden] {
+  display: none !important;
+}
+
+#lnz-origin-result {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #3586b9;
+  border-radius: 22px;
+  background: linear-gradient(
+    135deg,
+    #172d4f,
+    #121c32 58%,
+    #163b48
+  );
+  padding: 24px 18px;
+  margin: 18px 0;
+  box-shadow: 0 10px 32px #0005;
+  isolation: isolate;
+}
+
+#lnz-origin-result::before {
+  content: "";
+  position: absolute;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  right: -120px;
+  top: -130px;
+  background: #39c7ff35;
+  filter: blur(25px);
+  pointer-events: none;
+}
+
+#lnz-origin-result .lnz-origin-kicker {
+  font-size: 12px;
+  letter-spacing: .14em;
+  color: #a2eaff;
+  font-weight: 800;
+}
+
+#lnz-origin-result .lnz-origin-symbol {
+  width: 78px;
+  height: 78px;
+  border: 2px solid #64d8ff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  color: #d8f7ff;
+  background: linear-gradient(130deg,#16537b,#182b55);
+  box-shadow: 0 0 22px #45baff55;
+  margin: 18px auto 12px;
+}
+
+#lnz-origin-result h2 {
+  text-align: center;
+  font-size: clamp(24px,6vw,32px);
+  margin: 8px 0;
+  color: #f3fbff;
+}
+
+#lnz-origin-result .lnz-origin-subtitle {
+  text-align: center;
+  color: #d1e9f8;
+  margin: 0 auto 16px;
+  max-width: 480px;
+  line-height: 1.55;
+}
+
+#lnz-origin-result .lnz-origin-types {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 14px 0;
+}
+
+#lnz-origin-result .lnz-origin-types span {
+  border: 1px solid #668399;
+  border-radius: 20px;
+  padding: 6px 13px;
+  font-size: 13px;
+  color: #c6dae9;
+  background: #0d2035;
+}
+
+#lnz-origin-result .lnz-origin-note {
+  padding: 12px;
+  border-radius: 10px;
+  background: #0a172a;
+  color: #aecdde;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#lnz-origin-result .lnz-origin-note strong {
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  #lnz-origin-result:not([hidden]) .lnz-origin-symbol {
+    animation: lnz-origin-appear .65s ease-out both;
+  }
+
+  @keyframes lnz-origin-appear {
+    from {
+      transform: scale(.8);
+      opacity: .2;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+</style>
+
+<script>
+(() => {
+  'use strict';
+
+  if (document.getElementById('lnz-origin-result')) return;
+
+  const report = document.getElementById('technicalReport');
+  const stop = document.getElementById('stop');
+  const file = document.getElementById('file');
+
+  if (!report || !stop || !file) return;
+
+  const card = document.createElement('section');
+
+  card.id = 'lnz-origin-result';
+  card.hidden = true;
+
+  card.setAttribute(
+    'aria-labelledby',
+    'lnz-origin-heading'
+  );
+
+  card.innerHTML = `
+    <div class="lnz-origin-kicker">
+      ✦ LNZ MUSIC GUARD · RISULTATO AUDIO
+    </div>
+
+    <div class="lnz-origin-symbol" aria-hidden="true">
+      ♫
+    </div>
+
+    <h2 id="lnz-origin-heading">
+      Analisi completata
+    </h2>
+
+    <p class="lnz-origin-subtitle">
+      Origine della voce:
+      <strong>non determinabile con gli strumenti attuali</strong>.
+    </p>
+
+    <div class="lnz-origin-types">
+      <span>🤖 AI: non verificato</span>
+      <span>🎤 Voce umana: non verificata</span>
+    </div>
+
+    <div class="lnz-origin-note">
+      <strong>Nessuna percentuale inventata.</strong>
+      Durata, RMS, picco e BPM non permettono da soli
+      di distinguere una voce artificiale da una voce
+      umana. Una percentuale sarà possibile soltanto
+      dopo l'integrazione e la verifica di un
+      classificatore apposito. Questo risultato
+      non certifica originalità o copyright.
+    </div>
+  `;
+
+  report.insertAdjacentElement('afterend', card);
+
+  function refresh() {
+    card.hidden =
+      report.hidden ||
+      !stop.hidden ||
+      !file.files?.length;
+  }
+
+  const observer = new MutationObserver(refresh);
+
+  observer.observe(report, {
+    attributes: true,
+    attributeFilter: ['hidden']
+  });
+
+  observer.observe(stop, {
+    attributes: true,
+    attributeFilter: ['hidden']
+  });
+
+  file.addEventListener('change', () => {
+    queueMicrotask(refresh);
+  });
+
+  refresh();
+})();
+</script>
 </body>
 </html>
