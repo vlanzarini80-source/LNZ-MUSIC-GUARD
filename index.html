@@ -55,6 +55,30 @@ footer{text-align:center;color:#94a3b8;padding:10px 20px 35px}
 #lnz-online-catalog .lnz-meta-input{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:460px){#lnz-online-catalog .lnz-meta-input{grid-template-columns:1fr}}
 .lnz-pill{font-size:12px;color:#cbd5e1;background:#152943;padding:8px;border-radius:8px}
+
+/* LNZ MUSIC GUARD - Chiave di violino fissa */
+
+body::after {
+  content: "";
+  position: fixed;
+
+  left: -12px;
+  top: 12%;
+
+  width: min(38vw, 170px);
+  height: 76vh;
+
+  background-image: url("./lnz-chiave-violino.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+
+  opacity: 0.13;
+
+  pointer-events: none;
+  z-index: 40;
+}
+
 </style>
 </head>
 <body>
