@@ -621,5 +621,356 @@ $('lnz-refresh').addEventListener('click',async()=>{
  });
 })();
 </script>
+
+<script>
+/* LNZ MUSIC GUARD v0.7 - Condivisione */
+(() => {
+  'use strict';
+
+  if (document.getElementById('lnz-share-panel')) return;
+
+  const URL_APP =
+    'https://vlanzarini80-source.github.io/LNZ-MUSIC-GUARD/';
+
+  const TITOLO = 'LNZ MUSIC GUARD';
+
+  const TESTO =
+    'Scopri LNZ MUSIC GUARD, l’app di Valentino Lanzarini per analizzare musica, BPM e testi sincronizzati.';
+
+  const MESSAGGIO = TESTO + '\n' + URL_APP;
+
+  const root = document.querySelector('main');
+  if (!root) return;
+
+  const css = document.createElement('style');
+  css.textContent = `
+    #lnz-share-panel {
+      background:#1e293b;
+      border:1px solid #387297;
+      border-radius:16px;
+      padding:20px;
+      margin:18px 0;
+    }
+
+    #lnz-share-panel h2 {
+      color:#7dd3fc;
+      margin:0 0 10px;
+    }
+
+    #lnz-share-panel p {
+      color:#cbd5e1;
+      font-size:14px;
+    }
+
+    #lnz-share-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+
+    #lnz-share-grid button {
+      width:100%;
+      margin:0;
+      padding:13px 9px;
+      min-height:50px;
+      border:0;
+      border-radius:9px;
+      background:#334155;
+      color:white;
+      font-size:14px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    #lnz-share-grid [data-action="native"] {
+      grid-column:1/-1;
+      background:#0284c7;
+      font-size:17px;
+    }
+
+    #lnz-share-grid [data-action="whatsapp"] {
+      background:#176f43;
+    }
+
+    #lnz-share-grid [data-action="telegram"] {
+      background:#156788;
+    }
+
+    #lnz-share-grid [data-action="file"] {
+      grid-column:1/-1;
+    }
+
+    #lnz-share-feedback {
+      color:#bae6fd;
+      min-height:24px;
+      overflow-wrap:anywhere;
+    }
+
+    #lnz-share-float {
+      position:fixed;
+      z-index:80;
+      right:14px;
+      bottom:calc(15px + env(safe-area-inset-bottom, 0px));
+      width:auto;
+      min-height:46px;
+      margin:0;
+      padding:11px 17px;
+      border:2px solid #e0f2fe;
+      border-radius:28px;
+      background:#0284c7;
+      color:white;
+      font-size:14px;
+      font-weight:bold;
+      box-shadow:0 5px 18px #0007;
+    }
+
+    @media(max-width:340px) {
+      #lnz-share-grid {
+        grid-template-columns:1fr;
+      }
+
+      #lnz-share-grid [data-action] {
+        grid-column:1;
+      }
+    }
+  `;
+
+  document.head.appendChild(css);
+
+  const panel = document.createElement('section');
+  panel.id = 'lnz-share-panel';
+
+  panel.innerHTML = `
+    <h2>Condividi LNZ MUSIC GUARD</h2>
+
+    <p>
+      Invia la nostra app ad amici, musicisti e produttori.
+      Chi riceve il collegamento può aprirla in Chrome
+      e installarla sul proprio Android.
+    </p>
+
+    <div id="lnz-share-grid">
+      <button type="button" data-action="native">
+        ↗ Condividi con qualsiasi app
+      </button>
+
+      <button type="button" data-action="whatsapp">
+        WhatsApp
+      </button>
+
+      <button type="button" data-action="telegram">
+        Telegram
+      </button>
+
+      <button type="button" data-action="email">
+        Email
+      </button>
+
+      <button type="button" data-action="sms">
+        SMS
+      </button>
+
+      <button type="button" data-action="copy">
+        Copia collegamento
+      </button>
+
+      <button type="button" data-action="file">
+        Condividi un file audio selezionato
+      </button>
+    </div>
+
+    <p id="lnz-share-feedback"
+       role="status"
+       aria-live="polite"></p>
+
+    <p>
+      Puoi condividere anche un tuo MP3, quando Android
+      lo permette. Invia soltanto musica che hai
+      il diritto di distribuire.
+    </p>
+  `;
+
+  root.appendChild(panel);
+
+  const feedback =
+    document.getElementById('lnz-share-feedback');
+
+  const floating = document.createElement('button');
+
+  floating.id = 'lnz-share-float';
+  floating.type = 'button';
+  floating.textContent = '↗ Condividi';
+
+  floating.setAttribute(
+    'aria-label',
+    'Condividi LNZ MUSIC GUARD'
+  );
+
+  document.body.appendChild(floating);
+
+  function openExternal(url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  async function shareLink() {
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title:TITOLO,
+          text:TESTO,
+          url:URL_APP
+        });
+
+        feedback.textContent =
+          'Condivisione completata.';
+      } catch (error) {
+        if (error && error.name === 'AbortError') return;
+
+        feedback.textContent =
+          'Usa WhatsApp, Telegram o Copia collegamento.';
+
+        panel.scrollIntoView({
+          behavior:'smooth'
+        });
+      }
+    } else {
+      feedback.textContent =
+        'Menu Android non disponibile. Scegli uno degli altri pulsanti.';
+
+      panel.scrollIntoView({
+        behavior:'smooth'
+      });
+    }
+  }
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(URL_APP);
+
+      feedback.textContent =
+        'Collegamento copiato correttamente.';
+    } catch {
+      const input = document.createElement('input');
+
+      input.value = URL_APP;
+      input.readOnly = true;
+      input.style.cssText =
+        'width:100%;padding:12px;background:#0f172a;color:white';
+
+      feedback.replaceChildren(
+        document.createTextNode(
+          'Seleziona e copia questo collegamento:'
+        ),
+        input
+      );
+
+      input.focus();
+      input.select();
+    }
+  }
+
+  async function shareFile() {
+    const file =
+      document.getElementById('file')?.files?.[0];
+
+    if (!file) {
+      feedback.textContent =
+        'Prima carica una canzone MP3 o WAV nella sezione iniziale.';
+
+      panel.scrollIntoView({
+        behavior:'smooth'
+      });
+
+      return;
+    }
+
+    if (
+      typeof navigator.share !== 'function' ||
+      typeof navigator.canShare !== 'function' ||
+      !navigator.canShare({files:[file]})
+    ) {
+      feedback.textContent =
+        'Android non permette la condivisione del file da questa pagina. Usa Condividi dalla cartella Download.';
+
+      return;
+    }
+
+    try {
+      await navigator.share({
+        files:[file],
+        title:'File musicale',
+        text:'File condiviso tramite LNZ MUSIC GUARD.'
+      });
+
+      feedback.textContent =
+        'Condivisione del file completata.';
+    } catch (error) {
+      if (error?.name !== 'AbortError') {
+        feedback.textContent =
+          'Impossibile condividere questo file.';
+      }
+    }
+  }
+
+  document
+    .getElementById('lnz-share-grid')
+    .addEventListener('click', event => {
+
+      const button =
+        event.target.closest('button[data-action]');
+
+      if (!button) return;
+
+      const action = button.dataset.action;
+
+      if (action === 'native') {
+        void shareLink();
+      }
+
+      if (action === 'whatsapp') {
+        openExternal(
+          'https://wa.me/?text=' +
+          encodeURIComponent(MESSAGGIO)
+        );
+      }
+
+      if (action === 'telegram') {
+        openExternal(
+          'https://t.me/share/url?url=' +
+          encodeURIComponent(URL_APP) +
+          '&text=' +
+          encodeURIComponent(TESTO)
+        );
+      }
+
+      if (action === 'email') {
+        window.location.href =
+          'mailto:?subject=' +
+          encodeURIComponent(TITOLO) +
+          '&body=' +
+          encodeURIComponent(MESSAGGIO);
+      }
+
+      if (action === 'sms') {
+        window.location.href =
+          'sms:?body=' +
+          encodeURIComponent(MESSAGGIO);
+      }
+
+      if (action === 'copy') {
+        void copyLink();
+      }
+
+      if (action === 'file') {
+        void shareFile();
+      }
+    });
+
+  floating.addEventListener(
+    'click',
+    () => void shareLink()
+  );
+})();
+</script>
 </body>
 </html>
