@@ -8,192 +8,86 @@
 <meta name="description" content="LNZ MUSIC GUARD: analisi audio e trascrizione automatica sperimentale delle canzoni.">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.svg" type="image/svg+xml">
-<title>LNZ MUSIC GUARD 0.4</title>
+<title>LNZ MUSIC GUARD 0.6</title>
 <style>
-:root{
-  color-scheme:dark;
-  --base:#0b1120;
-  --panel:#1e293b;
-  --blue:#38bdf8;
-  --muted:#cbd5e1;
-}
+:root{color-scheme:dark;--base:#0b1120;--panel:#1e293b;--blue:#38bdf8;--muted:#cbd5e1}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--base);
-  color:#f8fafc;
-  font:16px/1.55 Arial,Helvetica,sans-serif;
-}
-header{
-  background:#182744;
-  padding:28px 18px;
-  text-align:center;
-}
-h1{
-  font-size:clamp(25px,6vw,35px);
-  color:var(--blue);
-  margin:0;
-}
-header p{
-  color:var(--muted);
-  margin:9px 0;
-}
-main{
-  max-width:740px;
-  margin:auto;
-  padding:18px;
-}
-section{
-  background:var(--panel);
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:18px;
-}
-h2{
-  color:#7dd3fc;
-  font-size:21px;
-  margin:0 0 16px;
-}
-h3{
-  font-size:17px;
-  margin:16px 0 10px;
-}
-label{
-  display:block;
-  margin:12px 0 6px;
-}
-input[type=file],select,textarea{
-  width:100%;
-  border:1px solid #475569;
-  border-radius:10px;
-  padding:12px;
-  background:#0f172a;
-  color:#f8fafc;
-  font-size:16px;
-}
-textarea{
-  min-height:190px;
-  resize:vertical;
-}
-audio{
-  width:100%;
-  margin:15px 0;
-}
-button{
-  display:block;
-  width:100%;
-  border:0;
-  border-radius:9px;
-  margin-top:13px;
-  padding:14px;
-  font-weight:700;
-  font-size:16px;
-  background:#0284c7;
-  color:white;
-  cursor:pointer;
-}
-button.secondary{background:#334155}
-button:disabled{
-  opacity:.48;
-  cursor:not-allowed;
-}
-button.inline{
-  width:auto;
-  padding:10px 16px;
-  margin-top:6px;
-}
-.muted,small{color:var(--muted)}
-.notice{
-  padding:12px;
-  background:#112a3f;
-  border-left:4px solid var(--blue);
-  border-radius:7px;
-}
-.warn{
-  border-left-color:#fbbf24;
-  background:#312b1d;
-}
-#status{
-  margin:14px 0 0;
-  min-height:24px;
-  color:#bae6fd;
-  overflow-wrap:anywhere;
-}
-#metrics{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-}
-.metric{
-  background:#0f172a;
-  border:1px solid #334155;
-  border-radius:11px;
-  padding:13px;
-  min-width:0;
-}
-.metric strong{
-  display:block;
-  font-size:19px;
-  overflow-wrap:anywhere;
-}
-.metric span{
-  font-size:13px;
-  color:var(--muted);
-}
-canvas{
-  width:100%;
-  height:125px;
-  display:block;
-  background:#0f172a;
-  border-radius:8px;
-}
-progress{
-  width:100%;
-  height:14px;
-  accent-color:#38bdf8;
-  margin-top:10px;
-}
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-.actions button{margin-top:8px}
-#lyricsStatus{
-  white-space:pre-line;
-  overflow-wrap:anywhere;
-}
-footer{
-  text-align:center;
-  color:#94a3b8;
-  padding:10px 20px 35px;
-}
+body{margin:0;background:var(--base);color:#f8fafc;font:16px/1.55 Arial,Helvetica,sans-serif}
+header{background:#182744;padding:28px 18px;text-align:center}
+h1{font-size:clamp(25px,6vw,35px);color:var(--blue);margin:0}
+header p{color:var(--muted);margin:9px 0}
+main{max-width:740px;margin:auto;padding:18px}
+section{background:var(--panel);border-radius:16px;padding:20px;margin-bottom:18px}
+h2{color:#7dd3fc;font-size:21px;margin:0 0 16px}
+h3{font-size:17px;margin:16px 0 10px}
+label{display:block;margin:12px 0 6px}
+input[type=file],select,textarea{width:100%;border:1px solid #475569;border-radius:10px;padding:12px;background:#0f172a;color:#f8fafc;font-size:16px}
+textarea{min-height:190px;resize:vertical}
+audio{width:100%;margin:15px 0}
+button{display:block;width:100%;border:0;border-radius:9px;margin-top:13px;padding:14px;font-weight:700;font-size:16px;background:#0284c7;color:white;cursor:pointer}
+button.secondary{background:#334155}button:disabled{opacity:.48;cursor:not-allowed}
+button.inline{width:auto;padding:10px 16px;margin-top:6px}
+.muted,small{color:var(--muted)}.notice{padding:12px;background:#112a3f;border-left:4px solid var(--blue);border-radius:7px}
+.warn{border-left-color:#fbbf24;background:#312b1d}
+#status{margin:14px 0 0;min-height:24px;color:#bae6fd;overflow-wrap:anywhere}
+#metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{background:#0f172a;border:1px solid #334155;border-radius:11px;padding:13px;min-width:0}
+.metric strong{display:block;font-size:19px;overflow-wrap:anywhere}.metric span{font-size:13px;color:var(--muted)}
+canvas{width:100%;height:125px;display:block;background:#0f172a;border-radius:8px}
+progress{width:100%;height:14px;accent-color:#38bdf8;margin-top:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions button{margin-top:8px}
+#lyricsStatus{white-space:pre-line;overflow-wrap:anywhere}
+footer{text-align:center;color:#94a3b8;padding:10px 20px 35px}
 [hidden]{display:none!important}
-@media(max-width:410px){
-  #metrics{grid-template-columns:1fr}
-  .actions{grid-template-columns:1fr}
-}
+@media(max-width:410px){#metrics{grid-template-columns:1fr}.actions{grid-template-columns:1fr}}
+/* Release v0.6: pannello strumenti visibile anche da PWA Android */
+#lnz-top-tools{padding:13px 14px 0;max-width:940px;margin:auto}
+#lnz-top-tools>p{margin:0 0 8px;color:#bae6fd;font-size:14px}
+#lnz-nav{display:flex;flex-wrap:nowrap;gap:7px;overflow-x:auto;padding:3px 0 10px;scrollbar-width:thin}
+#lnz-nav a{flex:0 0 auto;border:1px solid #375879;padding:9px 11px;border-radius:9px;background:#152943;color:#dbeafe;text-decoration:none;font-size:12px;font-weight:700}
+#lnz-nav a:focus-visible,#lnz-nav a:hover{outline:2px solid #7dd3fc}
+#lnz-refresh{margin:7px 0 12px;background:#334155;min-height:39px;font-size:13px}
+#lnz-build-status{font-size:12px;color:#94a3b8}
+#lnz-online-catalog input{width:100%;border:1px solid #475569;border-radius:8px;background:#0f172a;color:#fff;padding:12px;font:inherit}
+#lnz-online-catalog .lnz-results a{color:#7dd3fc}
+#lnz-online-catalog .lnz-results{list-style:none;padding:0;margin:14px 0 0}
+#lnz-online-catalog .lnz-results li{padding:12px;border-top:1px solid #334155}
+#lnz-online-catalog .lnz-results small{display:block;color:#cbd5e1}
+#lnz-online-catalog .lnz-meta-input{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:460px){#lnz-online-catalog .lnz-meta-input{grid-template-columns:1fr}}
+.lnz-pill{font-size:12px;color:#cbd5e1;background:#152943;padding:8px;border-radius:8px}
 </style>
 </head>
 <body>
-
 <header>
 <h1>♫ LNZ MUSIC GUARD</h1>
-<p>Analisi audio e prova di trascrizione guidata</p>
-<small>Valentino Lanzarini · Versione 0.4 (sperimentale)</small>
+<p>Analisi audio · catalogo brani · testi sincronizzati · rapporti</p>
+<small>Valentino Lanzarini · Versione 0.6 · aggiornamento integrato (sperimentale)</small>
 </header>
 
+<div id="lnz-top-tools">
+ <p><strong>Strumenti LNZ MUSIC GUARD</strong> · unica app ufficiale</p>
+ <nav id="lnz-nav" aria-label="Passa a uno strumento">
+  <a href="#lnz-upload">Carica brano</a>
+  <a href="#lnz-upload">Analisi audio</a>
+  <a href="#lnz-rhythm">BPM e ritmo</a>
+  <a href="#lnz-asr">Trascrizione</a>
+  <a href="#lnz-online-catalog">Catalogo</a>
+  <a href="#lnz-sync-panel">Karaoke</a>
+  <a href="#lnz-external-asr">Trascrizione esterna</a>
+  <a href="#lnz-install">Installazione</a>
+ </nav>
+ <button type="button" id="lnz-refresh" class="secondary">Aggiorna app e strumenti dal sito</button>
+ <div id="lnz-build-status" role="status">Versione installata v0.6 · Tutte le sezioni sono qui, scorrendo la pagina</div>
+</div>
 <main>
-<section>
+<section id="lnz-upload">
 <h2>1. Carica una canzone</h2>
-
 <label for="file">File audio sul tuo dispositivo</label>
 <input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac">
-
 <p id="filename" class="muted">Nessun file selezionato.</p>
 <audio id="player" controls preload="metadata"></audio>
-
-<label for="mode">Quanto audio trascrivere?</label>
+<label for="mode" id="lnz-asr">Quanto audio trascrivere?</label>
 <select id="mode">
 <option value="30">Primi 30 secondi</option>
 <option value="30-60" selected>Dal secondo 30 al 60 (prima prova consigliata)</option>
@@ -201,7 +95,6 @@ footer{
 <option value="90-120">Dal secondo 90 al 120</option>
 <option value="full">Intera canzone (molto lenta sul telefono)</option>
 </select>
-
 <label for="lang">Lingua della voce</label>
 <select id="lang">
 <option value="italian" selected>Italiano</option>
@@ -211,32 +104,28 @@ footer{
 <option value="german">Tedesco</option>
 <option value="auto">Rilevamento automatico (sperimentale)</option>
 </select>
-
 <button id="start" disabled>Analizza e trascrivi automaticamente</button>
 <button id="technical" class="secondary" disabled>Solo analisi audio (più veloce)</button>
 <button id="stop" class="secondary" hidden>Interrompi trascrizione</button>
-
-<div id="status" role="status" aria-live="polite">
-Seleziona una canzone per iniziare.
-</div>
+<div id="status" role="status" aria-live="polite">Seleziona una canzone per iniziare.</div>
 <progress id="progress" hidden></progress>
-
-<p class="muted">
-<small>Per trascrivere si scarica un modello AI multilingue (decine di MB). È necessaria una connessione Internet al primo utilizzo e il telefono potrebbe impiegare diversi minuti, fermarsi o esaurire la memoria. Nessun file audio viene caricato sui nostri server. Se il canto non è presente nel segmento, Whisper può inventare frasi.</small>
-</p>
+<p class="muted"><small>Per trascrivere si scarica un modello AI multilingue (decine di MB). È necessaria una connessione Internet al primo utilizzo e il telefono potrebbe impiegare diversi minuti, fermarsi o esaurire la memoria. Nessun file audio viene caricato sui nostri server. Se il canto non è presente nel segmento, Whisper può inventare frasi.</small></p>
 </section>
-
 <section id="technicalReport" hidden>
 <h2>2. Rapporto tecnico</h2>
 <div id="metrics"></div>
 <h3>Energia nel tempo</h3>
 <canvas id="wave" role="img" aria-label="Grafico dell'energia nel tempo"></canvas>
-<p class="muted">
-<small>Picco e RMS sono stime del segnale decodificato. Non certificano la qualità del mastering.</small>
-</p>
+<p class="muted"><small>Picco e RMS sono stime del segnale decodificato. Non certificano la qualità del mastering.</small></p>
 <button id="json" class="secondary">Scarica rapporto JSON</button>
 </section>
-
+<section id="lnz-rhythm">
+<h2>2B. Ritmo e BPM della canzone</h2>
+<p class="muted">Stima dei battiti al minuto dall'energia dei transienti; è un calcolo sul telefono, non un database. Su brani senza percussioni, rubati o dal vivo la misura può sbagliare o essere ambigua fra tempo doppio e dimezzato.</p>
+<button id="lnz-bpm-start" type="button">Stima BPM dal file caricato</button>
+<p id="lnz-bpm-status" role="status" class="muted">Premi Stima BPM per analizzare il ritmo.</p>
+<div id="lnz-bpm-metrics" class="metrics"></div>
+</section>
 <section id="lyricsPanel" hidden>
 <h2>3. Testo riconosciuto dall'AI</h2>
 <p id="lyricsStatus" class="muted"></p>
@@ -246,814 +135,490 @@ Seleziona una canzone per iniziare.
 <button id="txt" class="secondary">Scarica testo TXT</button>
 <button id="copy" class="secondary">Copia testo</button>
 </div>
-<p class="notice warn">
-<strong>Attenzione:</strong> i modelli vocali possono sbagliare o inventare parole sulla musica, durante le pause o con effetti vocali. La lingua viene impostata nel menu, oppure stimata dal modello se scegli Automatica. Non è una classificazione verificata. Controlla il risultato ascoltando la canzone.
-</p>
+<p class="notice warn"><strong>Attenzione:</strong> i modelli vocali possono sbagliare o inventare parole sulla musica, durante le pause o con effetti vocali. La lingua viene impostata nel menu, oppure stimata dal modello se scegli Automatica. Non è una classificazione verificata. Controlla il risultato ascoltando la canzone.</p>
+</section>
+<section id="lnz-online-catalog">
+<h2>4A. Cerca titolo e cantante nei cataloghi online</h2>
+<p class="muted">Il nome del file e i metadati MP3 aiutano a compilare i campi. La ricerca MusicBrainz trova registrazioni pubblicate, ma <strong>non riconosce una canzone ascoltandone l'audio</strong>.</p>
+<div class="lnz-meta-input">
+ <div><label for="lnz-catalog-title">Titolo</label><input id="lnz-catalog-title" type="text" maxlength="150" placeholder="Titolo della canzone"></div>
+ <div><label for="lnz-catalog-artist">Cantante / artista</label><input id="lnz-catalog-artist" type="text" maxlength="150" placeholder="Nome artista"></div>
+</div>
+<button id="lnz-catalog-search" type="button">Cerca nel catalogo MusicBrainz</button>
+<p id="lnz-catalog-status" role="status" class="muted">Nessuna ricerca ancora avviata.</p>
+<ul id="lnz-catalog-results" class="lnz-results"></ul>
+<p class="lnz-pill"><strong>Ascolti:</strong> non esiste un contatore mondiale unico. Eventuali visualizzazioni sono dati di una piattaforma e di una registrazione specifica, non si deducono dal file.</p>
 </section>
 
-<section>
-<h2>4. Ricerca musicale globale</h2>
-<p class="notice">
-<strong>Ancora da integrare.</strong> Non abbiamo accesso automatico al catalogo mondiale delle registrazioni e non possiamo confrontare questa canzone con tutti i brani pubblicati. Servirà un servizio esterno di fingerprint audio e un backend con credenziali protette.
-</p>
-<p class="muted">
-Un'impronta SHA-256 identifica soltanto file identici byte per byte; non individua cover, melodie somiglianti o presunti plagi.
-</p>
+<section id="lnz-similarity">
+<h2>4B. Riconoscimento dal suono e somiglianze</h2>
+<p class="notice"><strong>Riconoscimento acustico ancora da collegare.</strong> Non abbiamo accesso automatico al catalogo mondiale delle registrazioni e non possiamo confrontare questa canzone con tutti i brani pubblicati. Servirà un servizio esterno di fingerprint audio e un backend con credenziali protette.</p>
+<p class="muted">Un'impronta SHA-256 identifica soltanto file identici byte per byte; non individua cover, melodie somiglianti o presunti plagi.</p>
 </section>
-
-<section>
+<section id="lnz-external-asr">
+<h2>Trascrizione esterna e importazione testo</h2>
+<p class="muted">Per canzoni originali Whisper Tiny sul telefono può produrre testo senza senso. Puoi usare un servizio di trascrizione esterno, poi incollare la bozza qui. Il servizio esterno riceverà il file solo se decidi di caricarlo tu.</p>
+<a href="https://layrix.pro/en/lyrics" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none;background:#0284c7;color:white;border-radius:9px;padding:15px;font-weight:700">Apri servizio esterno Layrix</a>
+<label for="lnz-external-lyrics">Incolla il testo della canzone</label>
+<textarea id="lnz-external-lyrics" placeholder="Incolla il testo riconosciuto o il tuo testo originale"></textarea>
+<button id="lnz-import-lyrics" type="button">Importa il testo nel rapporto LNZ</button>
+<p id="lnz-import-status" role="status" class="muted"></p>
+</section>
+<section id="lnz-install">
 <h2>5. Installa sul telefono</h2>
-<p>
-Apri questo sito in <strong>Chrome</strong> su Android. Dal menu ⋮ scegli <strong>Installa app</strong> oppure <strong>Aggiungi a schermata Home</strong>, secondo le opzioni disponibili.
-</p>
+<p>Apri il sito ufficiale in <strong>Chrome</strong> su Android. L’app installata tramite Chrome usa esattamente lo stesso sito e le stesse funzioni; se mostra una versione vecchia premi «Aggiorna app e strumenti» in alto. Dal menu ⋮ scegli <strong>Installa app</strong> oppure <strong>Aggiungi a schermata Home</strong>, secondo le opzioni disponibili.</p>
 <button id="install" class="secondary" hidden>Installa LNZ MUSIC GUARD</button>
-<p class="muted">
-<small>La schermata principale può essere disponibile offline dopo una visita. La prima trascrizione richiede Internet; la disponibilità offline del modello AI non è garantita.</small>
-</p>
+<p class="muted"><small>L’ultima versione si aggiorna dal sito quando sei online; la cache può conservare una versione precedente. La prima trascrizione richiede Internet; la disponibilità offline del modello AI non è garantita.</small></p>
 </section>
-
 <section>
 <h2>Privacy e limiti</h2>
-<p>
-L'audio è elaborato nel browser. Per la trascrizione, il browser scarica componenti software e pesi del modello da servizi esterni. Non viene inviato il file audio ai nostri server. I risultati non sono una verifica legale dell'originalità o del copyright. È una versione sperimentale da collaudare sul dispositivo.
-</p>
+<p>L'audio è elaborato nel browser. Per la trascrizione, il browser scarica componenti software e pesi del modello da servizi esterni. Non viene inviato il file audio ai nostri server. I risultati non sono una verifica legale dell'originalità o del copyright. È una versione sperimentale da collaudare sul dispositivo.</p>
 </section>
 </main>
-
 <footer>© 2026 LNZ MUSIC GUARD</footer>
-
 <script>
 'use strict';
-
-const $ = id => document.getElementById(id);
-
-const fileInput = $('file');
-const player = $('player');
-const start = $('start');
-const technical = $('technical');
-const stop = $('stop');
-const status = $('status');
-
-let mediaUrl = null;
-let reportData = null;
-let profile = [];
-let audioDecoded = null;
-let worker = null;
-let runId = 0;
-let busy = false;
-let installEvent = null;
-
-const setStatus = s => {
-  status.textContent = s;
-};
-
-const db = x => x > 0 ? 20 * Math.log10(x) : -120;
-const fmt = (x,n=1) => Number(x).toFixed(n);
-
-const fmtTime = x => {
-  let s = Math.round(x);
-  return Math.floor(s/60) + ':' +
-    String(s%60).padStart(2,'0');
-};
-
-function setBusy(value) {
-  busy = value;
-  start.disabled = value || !fileInput.files.length;
-  technical.disabled = value || !fileInput.files.length;
-  fileInput.disabled = value;
-  stop.hidden = !value;
-}
-
-function addMetric(k,v) {
-  const el = document.createElement('div');
-  el.className = 'metric';
-
-  const a = document.createElement('span');
-  const b = document.createElement('strong');
-
-  a.textContent = k;
-  b.textContent = v;
-
-  el.append(a,b);
-  $('metrics').appendChild(el);
-}
-
-function draw(values) {
-  const c = $('wave');
-  const r = Math.min(window.devicePixelRatio || 1,2);
-
-  let w = Math.max(
-    260,
-    Math.floor(c.clientWidth*r)
-  );
-
-  let h = 125*r;
-  c.width = w;
-  c.height = h;
-
-  let g = c.getContext('2d');
-  g.fillStyle = '#0f172a';
-  g.fillRect(0,0,w,h);
-
-  if (!values.length) return;
-
-  let max = Math.max(.001,...values);
-  let n = Math.min(values.length,Math.floor(w/3));
-
-  g.fillStyle = '#38bdf8';
-
-  for (let i=0;i<n;i++) {
-    let a = Math.floor(i*values.length/n);
-    let b = Math.max(
-      a+1,
-      Math.floor((i+1)*values.length/n)
-    );
-
-    let p = 0;
-    for (let j=a;j<b;j++) {
-      p = Math.max(p,values[j]);
-    }
-
-    let y = Math.max(
-      1,
-      p/max*(h-14*r)
-    );
-
-    g.fillRect(
-      i*w/n,
-      h-y,
-      Math.max(1,w/n-1),
-      y
-    );
-  }
-}
-
-function download(name,body,type) {
-  let url = URL.createObjectURL(
-    new Blob([body],{type})
-  );
-
-  let a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-
-  setTimeout(
-    () => URL.revokeObjectURL(url),
-    5000
-  );
-}
-
-async function getHash(file) {
-  if (!crypto.subtle || file.size > 96*1048576) {
-    return null;
-  }
-
-  try {
-    const h = await crypto.subtle.digest(
-      'SHA-256',
-      await file.arrayBuffer()
-    );
-
-    return Array.from(new Uint8Array(h))
-      .map(x => x.toString(16).padStart(2,'0'))
-      .join('');
-
-  } catch {
-    return null;
-  }
-}
-
-function resetFile() {
-  runId++;
-
-  if (worker) {
-    worker.terminate();
-    worker = null;
-  }
-
-  audioDecoded = null;
-  reportData = null;
-  profile = [];
-
-  $('technicalReport').hidden = true;
-  $('lyricsPanel').hidden = true;
-  $('progress').hidden = true;
-
-  setBusy(false);
-
-  if (mediaUrl) {
-    URL.revokeObjectURL(mediaUrl);
-    mediaUrl = null;
-  }
-}
-
-fileInput.addEventListener('change',() => {
-  resetFile();
-
-  const f = fileInput.files[0];
-
-  if (!f) {
-    player.removeAttribute('src');
-    player.load();
-
-    $('filename').textContent =
-      'Nessun file selezionato.';
-
-    setStatus('Seleziona una canzone.');
-    return;
-  }
-
-  if (!(f.type.startsWith('audio/') ||
-    /\.(wav|mp3|m4a|aac|ogg|flac|opus)$/i.test(f.name))) {
-    setStatus('Formato non riconosciuto come audio.');
-    start.disabled = technical.disabled = true;
-    return;
-  }
-
-  mediaUrl = URL.createObjectURL(f);
-  player.src = mediaUrl;
-
-  $('filename').textContent =
-    f.name + ' · ' +
-    fmt(f.size/1048576,2) + ' MB';
-
-  setStatus(
-    'Pronto. Premi Analizza e trascrivi automaticamente.'
-  );
-});
-
-async function decodeFile(f) {
-  if (audioDecoded) return audioDecoded;
-
-  const C = window.AudioContext ||
-    window.webkitAudioContext;
-
-  if (!C) {
-    throw Error('Browser senza Web Audio API.');
-  }
-
-  let context = new C();
-
-  try {
-    const result = await context.decodeAudioData(
-      await f.arrayBuffer()
-    );
-
-    audioDecoded = result;
-    return result;
-
-  } finally {
-    await context.close().catch(() => {});
-  }
-}
-
-function calcStats(a,f,hash) {
-  const channels = a.numberOfChannels;
-  const len = a.length;
-  const block = Math.max(
-    256,
-    Math.round(a.sampleRate*.1)
-  );
-
-  const arrays = Array.from(
-    {length:channels},
-    (_,i) => a.getChannelData(i)
-  );
-
-  let sum = 0;
-  let count = 0;
-  let peak = 0;
-  let silent = 0;
-  let frameValues = [];
-
-  for (let i=0;i<len;i+=block) {
-    let n = 0;
-    let q = 0;
-
-    for (
-      let j=i;
-      j<Math.min(len,i+block);
-      j+=4
-    ) {
-      let v = 0;
-
-      for (const channel of arrays) {
-        v += channel[j];
-      }
-
-      v /= channels;
-
-      peak = Math.max(peak,Math.abs(v));
-      q += v*v;
-      n++;
-    }
-
-    if (n) {
-      count += n;
-      sum += q;
-
-      let rms = Math.sqrt(q/n);
-      frameValues.push(rms);
-
-      if (db(rms)<-45) silent++;
-    }
-  }
-
-  const p = frameValues
-    .filter(x => db(x)>=-45)
-    .map(db)
-    .sort((x,y) => x-y);
-
-  const pct = v => p[
-    Math.min(
-      p.length-1,
-      Math.floor((p.length-1)*v)
-    )
-  ];
-
-  let dynamic = p.length>10
-    ? pct(.9)-pct(.1)
-    : null;
-
-  let stats = {
-    versione:'0.4',
-    file:f.name,
-    size_bytes:f.size,
-    date_utc:new Date().toISOString(),
-    durata_s:a.duration,
-    canali:channels,
-    campionamento_hz:a.sampleRate,
-    picco_stimato_dbfs:db(peak),
-    rms_stimato_dbfs:db(
-      Math.sqrt(sum/Math.max(count,1))
-    ),
-    finestre_silenziose_percento:
-      100*silent/Math.max(1,frameValues.length),
-    escursione_energetica_db:dynamic,
-    sha256:hash,
-    trascrizione:null,
-    avvertenza:
-      'Nessun confronto online con cataloghi, nessun giudizio su plagio o copyright.'
-  };
-
-  return {stats,frameValues};
-}
-
-async function technicalAnalysis(f,id) {
-  setStatus(
-    'Decodifica e analisi audio in corso...'
-  );
-
-  const hash = await getHash(f);
-
-  if (id!==runId) return null;
-
-  const a = await decodeFile(f);
-
-  if (id!==runId) return null;
-
-  const res = calcStats(a,f,hash);
-
-  reportData = res.stats;
-  profile = res.frameValues;
-
-  $('metrics').replaceChildren();
-
-  addMetric('Durata',fmtTime(a.duration));
-  addMetric(
-    'Campionamento di decodifica',
-    fmt(a.sampleRate/1000,1)+' kHz'
-  );
-  addMetric('Canali',String(a.numberOfChannels));
-  addMetric(
-    'Picco stimato',
-    fmt(reportData.picco_stimato_dbfs)+' dBFS'
-  );
-  addMetric(
-    'Livello RMS stimato',
-    fmt(reportData.rms_stimato_dbfs)+' dBFS'
-  );
-  addMetric(
-    'Quasi silenzio',
-    fmt(reportData.finestre_silenziose_percento)+'%'
-  );
-  addMetric(
-    'Escursione energetica',
-    res.stats.escursione_energetica_db==null
-      ? 'N/D'
-      : fmt(res.stats.escursione_energetica_db)+' dB'
-  );
-  addMetric(
-    'SHA-256',
-    hash ? hash.slice(0,20)+'…' : 'Non disponibile'
-  );
-
-  $('technicalReport').hidden = false;
-  draw(profile);
-
-  return a;
-}
-
-async function resample16k(a,seconds,offset=0) {
-  const duration = Math.min(
-    a.duration-offset,
-    seconds
-  );
-
-  const count = Math.floor(duration*16000);
-
-  if (!(duration>0) || !count) {
-    throw Error('Segmento audio fuori durata.');
-  }
-
-  const O = window.OfflineAudioContext ||
-    window.webkitOfflineAudioContext;
-
-  if (!O) {
-    throw Error(
-      'OfflineAudioContext non disponibile.'
-    );
-  }
-
-  const off = new O(1,count,16000);
-  const src = off.createBufferSource();
-
-  src.buffer = a;
-  src.connect(off.destination);
-  src.start(0,offset,duration);
-
-  const rendered = await off.startRendering();
-
-  return new Float32Array(
-    rendered.getChannelData(0)
-  );
-}
-
-function startWorker(samples,id) {
-  return new Promise((resolve,reject) => {
-    if (!window.Worker) {
-      reject(Error(
-        'Web Worker non supportati da questo browser.'
-      ));
-      return;
-    }
-
-    let w = new Worker(
-      './asr-worker.js?v=04',
-      {type:'module'}
-    );
-
-    worker = w;
-
-    w.onmessage = e => {
-      if (id!==runId) return;
-
-      const msg = e.data || {};
-
-      if (msg.type==='progress') {
-        if (msg.message) {
-          setStatus(msg.message);
-        }
-
-        if (Number.isFinite(msg.percent)) {
-          $('progress').hidden = false;
-          $('progress').value = msg.percent;
-          $('progress').max = 100;
-        } else {
-          $('progress').removeAttribute('value');
-        }
-
-      } else if (msg.type==='done') {
-        worker.terminate();
-        worker = null;
-        resolve(msg.text || '');
-
-      } else if (msg.type==='error') {
-        worker.terminate();
-        worker = null;
-        reject(Error(
-          msg.message || 'Errore trascrizione.'
-        ));
-      }
-    };
-
-    w.onerror = e => {
-      w.terminate();
-      worker = null;
-
-      reject(Error(
-        'Impossibile avviare il motore di trascrizione. Controlla Internet e supporto del browser.'
-      ));
-    };
-
-    w.postMessage(
-      {
-        type:'transcribe',
-        samples,
-        language:$('lang').value
-      },
-      [samples.buffer]
-    );
-  });
-}
-
-async function run(withSpeech) {
-  const f = fileInput.files[0];
-
-  if (!f || busy) return;
-
-  const id = ++runId;
-
-  setBusy(true);
-  $('progress').hidden = true;
-  $('lyricsPanel').hidden = true;
-
-  try {
-    const a = await technicalAnalysis(f,id);
-
-    if (!a || id!==runId) return;
-
-    if (!withSpeech) {
-      setStatus('Analisi tecnica completata.');
-      return;
-    }
-
-    setStatus(
-      'Preparo l’audio mono a 16 kHz per il riconoscimento...'
-    );
-
-    await new Promise(r => setTimeout(r,25));
-
-    const mode = $('mode').value;
-
-    const offset =
-      mode==='30-60' ? 30 :
-      mode==='60-90' ? 60 :
-      mode==='90-120' ? 90 : 0;
-
-    const seconds = mode==='full'
-      ? a.duration
-      : Math.min(30,a.duration-offset);
-
-    if (!(seconds>0)) {
-      throw Error(
-        'Segmento oltre la fine della canzone.'
-      );
-    }
-
-    const samples = await resample16k(
-      a,seconds,offset
-    );
-
-    if (id!==runId) return;
-
-    setStatus(
-      'Avvio Whisper. Primo caricamento: download del modello AI...'
-    );
-
-    $('progress').hidden = false;
-    $('progress').removeAttribute('value');
-
-    const text = await startWorker(samples,id);
-
-    if (id!==runId) return;
-
-    const repetitions = (
-      text.match(
-        /\[(?:music|applause|silence)\]/gi
-      ) || []
-    ).length;
-
-    const suspicious =
-      !text.trim() || repetitions>=2;
-
-    const display = suspicious ? '' : text;
-
-    $('lyrics').value = display;
-    $('lyricsPanel').hidden = false;
-
-    reportData.trascrizione = display;
-    reportData.trascrizione_parziale =
-      seconds<a.duration;
-
-    reportData.segmento_inizio_s = offset;
-    reportData.segmento_fine_s =
-      Math.min(a.duration,offset+seconds);
-
-    reportData.modello =
-      'onnx-community/whisper-tiny (Transformers.js, CPU/WASM)';
-
-    $('lyricsStatus').textContent = suspicious
-      ? 'Trascrizione non affidabile: il modello ha restituito soltanto etichette ripetitive o nessuna parola. Nessun testo verificato.'
-      : 'Tentativo di trascrizione del tratto ' +
-        fmtTime(offset) + ' - ' +
-        fmtTime(offset+seconds) +
-        ' completato. TESTO NON VERIFICATO: confrontalo ascoltando la voce.';
-
-    setStatus(
-      suspicious
-        ? 'Whisper non ha riconosciuto parole utilizzabili. Prova un altro intervallo con voce chiaramente udibile.'
-        : 'Tentativo concluso: controlla ogni parola prima di usarla.'
-    );
-
-  } catch (e) {
-    console.error(e);
-
-    setStatus(
-      'Analisi non completata: ' +
-      (e?.message || String(e)) +
-      '. Il rapporto tecnico, se presente, rimane utilizzabile.'
-    );
-
-    if (withSpeech && reportData) {
-      $('lyricsPanel').hidden = false;
-      $('lyricsStatus').textContent =
-        'Trascrizione non riuscita su questo dispositivo. Nessun testo è stato inventato.';
-      $('lyrics').value = '';
-    }
-
-  } finally {
-    if (id===runId) {
-      $('progress').hidden = true;
-      setBusy(false);
-      stop.hidden = true;
-    }
-  }
-}
-
-start.addEventListener(
-  'click',
-  () => run(true)
-);
-
-technical.addEventListener(
-  'click',
-  () => run(false)
-);
-
-stop.addEventListener('click',() => {
-  runId++;
-
-  if (worker) {
-    worker.terminate();
-    worker = null;
-  }
-
-  setBusy(false);
-  $('progress').hidden = true;
-
-  setStatus(
-    'Trascrizione interrotta. Il rapporto tecnico eventualmente creato è ancora disponibile.'
-  );
-});
-
-$('json').addEventListener('click',() => {
-  if (!reportData) return;
-
-  reportData.trascrizione =
-    $('lyricsPanel').hidden
-      ? null
-      : $('lyrics').value;
-
-  download(
-    'lnz-music-guard-rapporto-v04.json',
-    JSON.stringify(reportData,null,2),
-    'application/json'
-  );
-});
-
-$('txt').addEventListener('click',() => {
-  download(
-    'lnz-trascrizione.txt',
-    $('lyrics').value,
-    'text/plain;charset=utf-8'
-  );
-});
-
-$('copy').addEventListener('click',async () => {
-  try {
-    await navigator.clipboard.writeText(
-      $('lyrics').value
-    );
-
-    $('lyricsStatus').textContent =
-      'Testo copiato. Controlla sempre le parole riconosciute.';
-
-  } catch {
-    $('lyricsStatus').textContent =
-      'Copia non disponibile: usa Seleziona tutto nel riquadro.';
-  }
-});
-
-window.addEventListener('resize',() => {
-  if (!$('technicalReport').hidden) {
-    draw(profile);
-  }
-});
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load',() => {
-    navigator.serviceWorker
-      .register('./sw.js')
-      .catch(e => console.warn('SW:',e));
-  });
-}
-
-window.addEventListener(
-  'beforeinstallprompt',
-  e => {
-    e.preventDefault();
-    installEvent = e;
-    $('install').hidden = false;
-  }
-);
-
-$('install').addEventListener('click',async () => {
-  if (!installEvent) return;
-
-  const e = installEvent;
-  installEvent = null;
-  $('install').hidden = true;
-
-  await e.prompt();
-});
+const $=id=>document.getElementById(id);
+const fileInput=$('file'),player=$('player'),start=$('start'),technical=$('technical'),stop=$('stop'),status=$('status');
+let mediaUrl=null,reportData=null,profile=[],audioDecoded=null,worker=null,runId=0,busy=false,installEvent=null;
+const setStatus=s=>{status.textContent=s};
+const db=x=>x>0?20*Math.log10(x):-120;
+const fmt=(x,n=1)=>Number(x).toFixed(n);
+const fmtTime=x=>{let s=Math.round(x);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+function setBusy(value){busy=value;start.disabled=value||!fileInput.files.length;technical.disabled=value||!fileInput.files.length;fileInput.disabled=value;stop.hidden=!value;}
+function addMetric(k,v){const el=document.createElement('div');el.className='metric';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=k;b.textContent=v;el.append(a,b);$('metrics').appendChild(el)}
+function draw(values){const c=$('wave'),r=Math.min(window.devicePixelRatio||1,2);let w=Math.max(260,Math.floor(c.clientWidth*r)),h=125*r;c.width=w;c.height=h;let g=c.getContext('2d');g.fillStyle='#0f172a';g.fillRect(0,0,w,h);if(!values.length)return;let max=Math.max(.001,...values),n=Math.min(values.length,Math.floor(w/3));g.fillStyle='#38bdf8';for(let i=0;i<n;i++){let a=Math.floor(i*values.length/n),b=Math.max(a+1,Math.floor((i+1)*values.length/n)),p=0;for(let j=a;j<b;j++)p=Math.max(p,values[j]);let y=Math.max(1,p/max*(h-14*r));g.fillRect(i*w/n,h-y,Math.max(1,w/n-1),y)}}
+function download(name,body,type){let url=URL.createObjectURL(new Blob([body],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000)}
+async function getHash(file){if(!crypto.subtle||file.size>96*1048576)return null;try{const h=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')}catch{return null}}
+function resetFile(){runId++;if(worker){worker.terminate();worker=null}audioDecoded=null;reportData=null;profile=[];$('technicalReport').hidden=true;$('lyricsPanel').hidden=true;$('progress').hidden=true;setBusy(false);if(mediaUrl){URL.revokeObjectURL(mediaUrl);mediaUrl=null}}
+fileInput.addEventListener('change',()=>{resetFile();const f=fileInput.files[0];if(!f){player.removeAttribute('src');player.load();$('filename').textContent='Nessun file selezionato.';setStatus('Seleziona una canzone.');return}if(!(f.type.startsWith('audio/')||/\.(wav|mp3|m4a|aac|ogg|flac|opus)$/i.test(f.name))){setStatus('Formato non riconosciuto come audio.');start.disabled=technical.disabled=true;return}mediaUrl=URL.createObjectURL(f);player.src=mediaUrl;$('filename').textContent=f.name+' · '+fmt(f.size/1048576,2)+' MB';setStatus('Pronto. Premi Analizza e trascrivi automaticamente.')});
+async function decodeFile(f){if(audioDecoded)return audioDecoded;const C=window.AudioContext||window.webkitAudioContext;if(!C)throw Error('Browser senza Web Audio API.');let context=new C();try{const result=await context.decodeAudioData(await f.arrayBuffer());audioDecoded=result;return result}finally{await context.close().catch(()=>{})}}
+function calcStats(a,f,hash){const channels=a.numberOfChannels,len=a.length,block=Math.max(256,Math.round(a.sampleRate*.1));const arrays=Array.from({length:channels},(_,i)=>a.getChannelData(i));let sum=0,count=0,peak=0,silent=0,frameValues=[];
+for(let i=0;i<len;i+=block){let n=0,q=0;for(let j=i;j<Math.min(len,i+block);j+=4){let v=0;for(const channel of arrays)v+=channel[j];v/=channels;peak=Math.max(peak,Math.abs(v));q+=v*v;n++}if(n){count+=n;sum+=q;let rms=Math.sqrt(q/n);frameValues.push(rms);if(db(rms)<-45)silent++}}
+const p=frameValues.filter(x=>db(x)>=-45).map(db).sort((x,y)=>x-y),pct=v=>p[Math.min(p.length-1,Math.floor((p.length-1)*v))];let dynamic=p.length>10?pct(.9)-pct(.1):null;
+let stats={versione:'0.6',file:f.name,size_bytes:f.size,date_utc:new Date().toISOString(),durata_s:a.duration,canali:channels,campionamento_hz:a.sampleRate,picco_stimato_dbfs:db(peak),rms_stimato_dbfs:db(Math.sqrt(sum/Math.max(count,1))),finestre_silenziose_percento:100*silent/Math.max(1,frameValues.length),escursione_energetica_db:dynamic,sha256:hash,trascrizione:null,avvertenza:'Nessun confronto online con cataloghi, nessun giudizio su plagio o copyright.'};
+return {stats,frameValues}}
+async function technicalAnalysis(f,id){setStatus('Decodifica e analisi audio in corso...');const hash=await getHash(f);if(id!==runId)return null;const a=await decodeFile(f);if(id!==runId)return null;const res=calcStats(a,f,hash);reportData=res.stats;profile=res.frameValues;$('metrics').replaceChildren();addMetric('Durata',fmtTime(a.duration));addMetric('Campionamento di decodifica',fmt(a.sampleRate/1000,1)+' kHz');addMetric('Canali',String(a.numberOfChannels));addMetric('Picco stimato',fmt(reportData.picco_stimato_dbfs)+' dBFS');addMetric('Livello RMS stimato',fmt(reportData.rms_stimato_dbfs)+' dBFS');addMetric('Quasi silenzio',fmt(reportData.finestre_silenziose_percento)+'%');addMetric('Escursione energetica',res.stats.escursione_energetica_db==null?'N/D':fmt(res.stats.escursione_energetica_db)+' dB');addMetric('SHA-256',hash?hash.slice(0,20)+'…':'Non disponibile');$('technicalReport').hidden=false;draw(profile);return a}
+async function resample16k(a,seconds,offset=0){const duration=Math.min(a.duration-offset,seconds),count=Math.floor(duration*16000);if(!(duration>0)||!count)throw Error('Segmento audio fuori durata.');const O=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!O)throw Error('OfflineAudioContext non disponibile.');const off=new O(1,count,16000),src=off.createBufferSource();src.buffer=a;src.connect(off.destination);src.start(0,offset,duration);const rendered=await off.startRendering();return new Float32Array(rendered.getChannelData(0))}
+function startWorker(samples,id){return new Promise((resolve,reject)=>{if(!window.Worker){reject(Error('Web Worker non supportati da questo browser.'));return}let w=new Worker('./asr-worker.js?v=04',{type:'module'});worker=w;w.onmessage=e=>{if(id!==runId)return;const msg=e.data||{};if(msg.type==='progress'){if(msg.message)setStatus(msg.message);if(Number.isFinite(msg.percent)){$('progress').hidden=false;$('progress').value=msg.percent;$('progress').max=100}else $('progress').removeAttribute('value')}else if(msg.type==='done'){worker.terminate();worker=null;resolve(msg.text||'')}else if(msg.type==='error'){worker.terminate();worker=null;reject(Error(msg.message||'Errore trascrizione.'))}};w.onerror=e=>{w.terminate();worker=null;reject(Error('Impossibile avviare il motore di trascrizione. Controlla Internet e supporto del browser.'))};w.postMessage({type:'transcribe',samples,language:$('lang').value},[samples.buffer])})}
+async function run(withSpeech){const f=fileInput.files[0];if(!f||busy)return;const id=++runId;setBusy(true);$('progress').hidden=true;$('lyricsPanel').hidden=true;try{const a=await technicalAnalysis(f,id);if(!a||id!==runId)return;if(!withSpeech){setStatus('Analisi tecnica completata.');return}setStatus('Preparo l’audio mono a 16 kHz per il riconoscimento...');await new Promise(r=>setTimeout(r,25));const mode=$('mode').value;const offset=mode==='30-60'?30:mode==='60-90'?60:mode==='90-120'?90:0;const seconds=mode==='full'?a.duration:Math.min(30,a.duration-offset);if(!(seconds>0))throw Error('Segmento oltre la fine della canzone.');const samples=await resample16k(a,seconds,offset);if(id!==runId)return;setStatus('Avvio Whisper. Primo caricamento: download del modello AI...');$('progress').hidden=false;$('progress').removeAttribute('value');const text=await startWorker(samples,id);if(id!==runId)return;const repetitions=(text.match(/\[(?:music|applause|silence)\]/gi)||[]).length;const suspicious=!text.trim()||repetitions>=2;const display=suspicious?'':text;$('lyrics').value=display;$('lyricsPanel').hidden=false;reportData.trascrizione=display;reportData.trascrizione_parziale=(seconds<a.duration);reportData.segmento_inizio_s=offset;reportData.segmento_fine_s=Math.min(a.duration,offset+seconds);reportData.modello='onnx-community/whisper-tiny (Transformers.js, CPU/WASM)';$('lyricsStatus').textContent=suspicious?'Trascrizione non affidabile: il modello ha restituito soltanto etichette ripetitive o nessuna parola. Nessun testo verificato.':'Tentativo di trascrizione del tratto '+fmtTime(offset)+' - '+fmtTime(offset+seconds)+' completato. TESTO NON VERIFICATO: confrontalo ascoltando la voce.';setStatus(suspicious?'Whisper non ha riconosciuto parole utilizzabili. Prova un altro intervallo con voce chiaramente udibile.':'Tentativo concluso: controlla ogni parola prima di usarla.');}catch(e){console.error(e);setStatus('Analisi non completata: '+(e?.message||String(e))+'. Il rapporto tecnico, se presente, rimane utilizzabile.');if(withSpeech&&reportData){$('lyricsPanel').hidden=false;$('lyricsStatus').textContent='Trascrizione non riuscita su questo dispositivo. Nessun testo è stato inventato.';$('lyrics').value=''}}finally{if(id===runId){$('progress').hidden=true;setBusy(false);stop.hidden=true}}}
+start.addEventListener('click',()=>run(true));technical.addEventListener('click',()=>run(false));
+stop.addEventListener('click',()=>{runId++;if(worker){worker.terminate();worker=null}setBusy(false);$('progress').hidden=true;setStatus('Trascrizione interrotta. Il rapporto tecnico eventualmente creato è ancora disponibile.')});
+$('json').addEventListener('click',()=>{if(!reportData)return;reportData.trascrizione=$('lyricsPanel').hidden?null:$('lyrics').value;download('lnz-music-guard-rapporto-v06.json',JSON.stringify(reportData,null,2),'application/json')});
+$('txt').addEventListener('click',()=>download('lnz-trascrizione.txt',$('lyrics').value,'text/plain;charset=utf-8'));
+$('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('lyrics').value);$('lyricsStatus').textContent='Testo copiato. Controlla sempre le parole riconosciute.'}catch{$('lyricsStatus').textContent='Copia non disponibile: usa Seleziona tutto nel riquadro.'}});
+window.addEventListener('resize',()=>{if(!$('technicalReport').hidden)draw(profile)});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e))})}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;$('install').hidden=false});
+$('install').addEventListener('click',async()=>{if(!installEvent)return;const e=installEvent;installEvent=null;$('install').hidden=true;await e.prompt()});
 </script>
 <script>
-(function () {
-  const main = document.querySelector("main");
-  if (!main) return;
+/* LNZ MUSIC GUARD 0.6 - catalogo testi sincronizzati
+   Copyright (c) 2026 LNZ MUSIC GUARD. Nessuna chiave API nel browser.
+   Si collega soltanto a LRCLIB pubblico su richiesta dell'utente.
+*/
+(() => {
+  'use strict';
+  if (document.getElementById('lnz-sync-panel')) return;
+  const host = document.querySelector('main');
+  const player = document.getElementById('player');
+  const uploader = document.getElementById('file');
+  if (!host || !player || !uploader) return;
 
-  const section = document.createElement("section");
-  section.innerHTML = `
-    <h2>Riconoscimento vocale online</h2>
-    <p>Usa Layrix per cercare di riconoscere
-    le parole cantate.</p>
+  const panel = document.createElement('section');
+  panel.id = 'lnz-sync-panel';
+  const heading = document.createElement('h2');
+  heading.textContent = 'Karaoke · testo sincronizzato con la musica · v0.6';
+  panel.appendChild(heading);
+  const intro = document.createElement('p');
+  intro.className = 'muted';
+  intro.textContent = 'Cerca i testi sincronizzati di brani conosciuti su LRCLIB oppure importa un file LRC/SRT. Il testo segue la riproduzione. Per una canzone originale senza testo pubblicato serve una trascrizione separata.';
+  panel.appendChild(intro);
 
-    <a href="https://layrix.pro/en/lyrics"
-       target="_blank"
-       rel="noopener noreferrer"
-       style="display:block;background:#0284c7;
-       color:white;text-align:center;padding:15px;
-       border-radius:9px;text-decoration:none">
-       Apri riconoscimento Layrix
-    </a>
-
-    <p>Carica la canzone su Layrix, poi
-    torna qui e incolla il testo ottenuto.</p>
-
-    <textarea id="lnzExternalLyrics"
-      placeholder="Testo riconosciuto..."
-      style="width:100%;min-height:180px">
-    </textarea>
-
-    <button id="lnzImportLyrics">
-      Importa nel rapporto LNZ
-    </button>
-
-    <p id="lnzImportStatus"></p>
-
-    <small>Layrix è un servizio esterno.
-    Il caricamento dell'audio avviene
-    soltanto quando lo autorizzi tu.</small>
+  const style = document.createElement('style');
+  style.textContent = `
+    #lnz-sync-panel{border:1px solid #365273}
+    #lnz-sync-panel .lnz-line{font-size:clamp(20px,5.5vw,28px);line-height:1.45;min-height:125px;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f172a;border-radius:12px;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere}
+    #lnz-sync-panel .lnz-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    #lnz-sync-panel .lnz-meta input{width:100%;padding:12px;border:1px solid #475569;border-radius:8px;background:#0f172a;color:#fff;font:inherit}
+    #lnz-sync-panel button:disabled{opacity:.5;cursor:not-allowed}
+    #lnz-sync-panel .lnz-lines{max-height:250px;overflow:auto;border:1px solid #334155;border-radius:10px;margin-top:10px}
+    #lnz-sync-panel .lnz-lines button{border-radius:0;margin:0;text-align:left;background:#142236;border-bottom:1px solid #334155;font-weight:400;font-size:14px}
+    #lnz-sync-panel .lnz-lines button.lnz-active{background:#155e75;font-weight:700}
+    #lnz-sync-panel .lnz-note{color:#cbd5e1;font-size:13px;white-space:pre-wrap}
+    @media(max-width:420px){#lnz-sync-panel .lnz-meta{grid-template-columns:1fr}}
   `;
+  panel.appendChild(style);
+  const make = (name, attrs={}, parent=panel) => {
+    const node=document.createElement(name);
+    for (const [k,v] of Object.entries(attrs)) {
+      if(k==='text') node.textContent=v;
+      else if(k==='class')node.className=v;
+      else node.setAttribute(k,v);
+    }
+    parent.appendChild(node);
+    return node;
+  };
+  const inputs=make('div', {'class':'lnz-meta'});
+  const titleCol=make('div',{},inputs);
+  make('label',{text:'Titolo (da tag MP3 o inserimento manuale)'},titleCol);
+  const title=make('input',{id:'lnz-lyrics-title',type:'text',placeholder:'Titolo della canzone',maxlength:'150'},titleCol);
+  const artistCol=make('div',{},inputs);
+  make('label',{text:'Cantante / artista'},artistCol);
+  const artist=make('input',{id:'lnz-lyrics-artist',type:'text',placeholder:'Nome del cantante',maxlength:'150'},artistCol);
+  const search=make('button',{type:'button',text:'Cerca testo sincronizzato online · LRCLIB'});
+  const state=make('p',{'class':'lnz-note',role:'status','aria-live':'polite',text:'Non sono state fatte richieste online.'});
+  const matches=make('select',{'aria-label':'Scegli versione del brano'});
+  matches.hidden=true;
+  const selectBtn=make('button',{type:'button',text:'Carica il testo della versione selezionata'});
+  selectBtn.hidden=true;
+  make('label',{text:'Oppure importa sottotitoli già temporizzati: .lrc, .srt o .vtt'});
+  const fileInput=make('input',{type:'file',accept:'.lrc,.srt,.vtt,text/plain'});
+  make('p',{'class':'lnz-note',text:'Il lettore sottostante usa la stessa canzone che hai caricato all’inizio dell’app.'});
+  const current=make('div',{'class':'lnz-line','aria-live':'off',text:'Nessun sottotitolo temporizzato caricato.'});
+  const progress=make('p',{'class':'lnz-note',text:'0:00 · In attesa'});
+  const rows=make('div',{'class':'lnz-lines'});
+  const exportBtn=make('button',{type:'button',text:'Esporta sottotitoli SRT','class':'secondary'});
+  exportBtn.disabled=true;
+  const privacy=make('p',{'class':'lnz-note',text:'La ricerca consulta LRCLIB soltanto quando premi Cerca. Non viene inviato alcun audio: soltanto titolo e artista. Le licenze e l’accuratezza dei testi esterni devono essere verificate. I numeri degli ascolti non sono forniti da LRCLIB.'});
+  if (document.getElementById('lyricsPanel'))document.getElementById('lyricsPanel').insertAdjacentElement('afterend',panel);
+  else host.appendChild(panel);
 
-  main.appendChild(section);
+  window.LNZMusicGuard = {
+    setTextIdentity(track, singer) {
+      if (track && !title.value.trim()) title.value=String(track).slice(0,150);
+      if (singer && !artist.value.trim()) artist.value=String(singer).slice(0,150);
+    },
+    setTextIdentityVerified(track, singer) {
+      if (track) title.value=String(track).slice(0,150);
+      if (singer) artist.value=String(singer).slice(0,150);
+    }
+  };
+  let segments=[];
+  let results=[];
+  let rowButtons=[];
+  let activeIndex=-2;
+  let requestId=0;
 
-  document.getElementById("lnzImportLyrics")
-    .addEventListener("click", function () {
-      const text = document.getElementById(
-        "lnzExternalLyrics"
-      ).value.trim();
-
-      if (!text) {
-        document.getElementById(
-          "lnzImportStatus"
-        ).textContent = "Inserisci il testo riconosciuto.";
-        return;
-      }
-
-      document.getElementById("lyrics").value = text;
-      document.getElementById(
-        "lyricsPanel"
-      ).hidden = false;
-
-      document.getElementById(
-        "lyricsStatus"
-      ).textContent =
-        "Testo importato: verifica le parole ascoltando.";
-
-      document.getElementById(
-        "lnzImportStatus"
-      ).textContent = "Testo importato.";
-
-      document.getElementById(
-        "lyricsPanel"
-      ).scrollIntoView({behavior:"smooth"});
+  const time=(v)=>{
+    const parts=String(v).replace(',', '.').split(':').map(Number);
+    if((parts.length!==2&&parts.length!==3)||parts.some(x=>!Number.isFinite(x)))return NaN;
+    return parts.length===2?parts[0]*60+parts[1]:parts[0]*3600+parts[1]*60+parts[2];
+  };
+  const mmss=(v)=>{const s=Math.max(0,Math.floor(v||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+  const srtTime=(v)=>{
+    const h=Math.floor(v/3600),m=Math.floor((v%3600)/60),s=Math.floor(v%60),ms=Math.floor((v%1)*1000);
+    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':')+','+String(ms).padStart(3,'0');
+  };
+  const stripTags=t=>String(t).replace(/<[^>]+>/g,'').trim().slice(0,800);
+  function add(out,start,end,text){
+    const clean=stripTags(text);
+    if(clean&&Number.isFinite(start)&&Number.isFinite(end)&&start>=0&&end>start&&end<=7200){out.push({start,end,text:clean});}
+  }
+  function parseLRC(src){
+    const entries=[];
+    for(const line of src.replace(/\r/g,'').split('\n')){
+      const marks=[...line.matchAll(/\[(\d{1,2}:\d{2}(?:\.\d{1,3})?)\]/g)];
+      if(!marks.length)continue;
+      const caption=line.replace(/\[\d{1,2}:\d{2}(?:\.\d{1,3})?\]/g,'').trim();
+      if(!caption)continue;
+      for(const marker of marks){const s=time(marker[1]);if(Number.isFinite(s))entries.push({start:s,text:caption});}
+    }
+    entries.sort((a,b)=>a.start-b.start);
+    const out=[];
+    for(let i=0;i<Math.min(entries.length,800);i++){
+      const a=entries[i],next=entries[i+1]?.start;
+      add(out,a.start,Number.isFinite(next)&&next>a.start?Math.min(next,a.start+12):a.start+5,a.text);
+    }
+    return out;
+  }
+  function parseSRT(src){
+    const out=[];
+    const regex=/^(\d{1,2}:\d{2}(?::\d{2})?[.,]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}(?::\d{2})?[.,]\d{1,3})/;
+    for(const block of src.replace(/\r/g,'').trim().split(/\n[ \t]*\n/)){
+      const lines=block.trim().split('\n');
+      const idx=lines.findIndex(line=>regex.test(line));
+      if(idx<0)continue;
+      const m=lines[idx].match(regex);
+      add(out,time(m[1]),time(m[2]),lines.slice(idx+1).join(' '));
+      if(out.length>=800)break;
+    }
+    return out.sort((a,b)=>a.start-b.start);
+  }
+  function updateCaptions(){
+    const pos=Number(player.currentTime)||0;
+    const idx=segments.findIndex(s=>pos>=s.start && pos<s.end);
+    progress.textContent=mmss(pos)+' · '+segments.length+' frasi';
+    if(idx===activeIndex)return;
+    activeIndex=idx;
+    current.textContent=idx>=0?segments[idx].text:(segments.length?'♫ Parte strumentale o intervallo senza testo':'Nessun testo sincronizzato disponibile.');
+    rowButtons.forEach((b,i)=>b.classList.toggle('lnz-active',i===idx));
+    if(idx>=0)rowButtons[idx]?.scrollIntoView?.({block:'nearest',behavior:'smooth'});
+  }
+  function loadSegments(next,label){
+    segments=next.slice(0,800);
+    activeIndex=-2;
+    rows.replaceChildren();rowButtons=[];
+    segments.forEach(s=>{
+      const b=document.createElement('button');b.type='button';b.textContent=mmss(s.start)+' · '+s.text;
+      b.addEventListener('click',()=>{player.currentTime=s.start;updateCaptions();});
+      rows.appendChild(b);rowButtons.push(b);
     });
+    exportBtn.disabled=!segments.length;
+    state.textContent=segments.length?label+' · '+segments.length+' frasi sincronizzate.':'Non sono presenti tempi utilizzabili nel testo.';
+    updateCaptions();
+  }
+  player.addEventListener('timeupdate',updateCaptions);
+  player.addEventListener('seeked',updateCaptions);
+  player.addEventListener('loadedmetadata',updateCaptions);
+  uploader.addEventListener('change',()=>{
+    requestId++;
+    loadSegments([],'Nuovo file selezionato');
+    results=[];matches.hidden=true;selectBtn.hidden=true;title.value='';artist.value='';
+    const f=uploader.files?.[0];if(!f)return;
+    const basename=f.name.replace(/\.[^.]+$/,'').replace(/_/g,' ').trim();
+    const sep=basename.match(/^(.*?)\s+[-–]\s+(.*?)$/);
+    if(sep){artist.value=sep[1];title.value=sep[2];state.textContent='Titolo e artista proposti dal nome del file: controllali. NON è riconoscimento dal suono.';}
+    else state.textContent='File selezionato: inserisci titolo e artista per cercare i sottotitoli pubblicati.';
+  });
+  search.addEventListener('click',async()=>{
+    const t=title.value.trim(),a=artist.value.trim();
+    if(t.length<2||a.length<2){state.textContent='Inserisci titolo e artista: LRCLIB non ascolta la canzone, cerca per nome.';return;}
+    const id=++requestId;
+    const q=new URLSearchParams({track_name:t,artist_name:a});
+    search.disabled=true;matches.hidden=true;selectBtn.hidden=true;state.textContent='Ricerca LRCLIB in corso...';
+    try {
+      const c=new AbortController(),timeout=setTimeout(()=>c.abort(),16000);
+      let response;
+      try {response=await fetch('https://lrclib.net/api/search?'+q.toString(),{
+        headers:{'Lrclib-Client':'LNZ-MUSIC-GUARD/0.6 (https://github.com/vlanzarini80-source/LNZ-MUSIC-GUARD)'},
+        signal:c.signal
+      });}finally{clearTimeout(timeout);}
+      if(id!==requestId)return;
+      if(response.status===429){state.textContent='LRCLIB richiede di attendere: troppe richieste. Riprova più tardi.';return;}
+      if(!response.ok)throw Error('HTTP '+response.status);
+      const json=await response.json();
+      if(!Array.isArray(json))throw Error('Risposta catalogo inattesa');
+      results=json.filter(x=>x&&typeof x.syncedLyrics==='string'&&x.syncedLyrics.length>4).slice(0,20);
+      matches.replaceChildren();
+      results.forEach((x,i)=>{
+        const option=document.createElement('option');option.value=String(i);
+        option.textContent=[x.trackName,x.artistName,x.duration?mmss(x.duration):''].filter(Boolean).join(' · ').slice(0,180);
+        matches.appendChild(option);
+      });
+      if(!results.length){state.textContent='Non ci sono testi sincronizzati disponibili per questa ricerca. Non significa che la canzone non esista.';return;}
+      matches.hidden=false;selectBtn.hidden=false;
+      state.textContent=results.length+' versioni con testo sincronizzato trovate. Scegli la registrazione corretta prima di caricare i sottotitoli.';
+    } catch(e){if(id===requestId)state.textContent='Ricerca non riuscita: '+String(e.message||e);}
+    finally{search.disabled=false;}
+  });
+  selectBtn.addEventListener('click',()=>{
+    const chosen=results[Number(matches.value)];if(!chosen)return;
+    const next=parseLRC(chosen.syncedLyrics);
+    loadSegments(next,'LRCLIB · '+chosen.trackName+' · '+chosen.artistName+' (verifica la versione e i tempi)');
+  });
+  fileInput.addEventListener('change',async()=>{
+    const file=fileInput.files?.[0];if(!file)return;
+    try{
+      if(file.size>1024*1024)throw Error('File di sottotitoli troppo grande, limite 1 MB.');
+      const content=await file.text();
+      const next=file.name.toLowerCase().endsWith('.lrc')?parseLRC(content):parseSRT(content);
+      if(!next.length)throw Error('Nessun tempo valido. Il TXT semplice non è sincronizzabile automaticamente.');
+      loadSegments(next,'Sottotitoli importati dal telefono');
+    }catch(e){state.textContent='Importazione fallita: '+String(e.message||e);}
+    fileInput.value='';
+  });
+  exportBtn.addEventListener('click',()=>{
+    if(!segments.length)return;
+    const text=segments.map((s,i)=>[i+1,srtTime(s.start)+' --> '+srtTime(s.end),s.text,''].join('\n')).join('\n');
+    const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+    const a=document.createElement('a');a.href=url;a.download='LNZ-MUSIC-GUARD-sottotitoli.srt';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+  });
+})();
+
+</script>
+<script>
+/* LNZ MUSIC GUARD v0.6 - catalogo, ID3 e aggiornamento PWA (no chiavi in browser) */
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const picker=$('file'),catalogTitle=$('lnz-catalog-title'),catalogArtist=$('lnz-catalog-artist');
+const resultList=$('lnz-catalog-results'),resultStatus=$('lnz-catalog-status');
+let metadataRun=0;
+const clean=s=>String(s||'').replace(/[\u0000-\u001f]/g,' ').trim().slice(0,150);
+const niceName=s=>s.replace(/\.[^.]*$/,'').replace(/_/g,' ').trim();
+function decodeTag(bytes){
+ if(!bytes?.length)return '';
+ const encoding=bytes[0],arr=bytes.subarray(1);
+ try {
+   if(encoding===3)return clean(new TextDecoder('utf-8').decode(arr));
+   if(encoding===0)return clean(new TextDecoder('latin1').decode(arr));
+   if(encoding===1 && arr.length>2){
+     const little=arr[0]===255&&arr[1]===254,offset=arr[0]===255||arr[0]===254?2:0;
+     return clean(new TextDecoder(little?'utf-16le':'utf-16be').decode(arr.subarray(offset)));
+   }
+   if(encoding===2)return clean(new TextDecoder('utf-16be').decode(arr));
+ }catch(e){}return '';
+}
+async function metadata(file){
+ const b=new Uint8Array(await file.slice(0,Math.min(file.size,1024*1024)).arrayBuffer()),v=new DataView(b.buffer,b.byteOffset,b.byteLength);
+ const ascii=(o,n)=>String.fromCharCode(...b.subarray(o,o+n));
+ let title='',artist='';
+ if(b.length>=10 && ascii(0,3)==='ID3'){
+  const major=b[3];let end=Math.min(b.length,10+((b[6]&127)<<21)+((b[7]&127)<<14)+((b[8]&127)<<7)+(b[9]&127));
+  if(major===3||major===4){
+   for(let p=10;p+10<=end;){
+    const id=ascii(p,4);if(!/^[A-Z0-9]{4}$/.test(id))break;
+    const len=major===4?((b[p+4]&127)<<21)|((b[p+5]&127)<<14)|((b[p+6]&127)<<7)|(b[p+7]&127):v.getUint32(p+4,false);
+    if(!len||len>end-p-10)break;
+    const raw=b.subarray(p+10,p+10+len);
+    if(id==='TIT2')title=decodeTag(raw);
+    if(id==='TPE1')artist=decodeTag(raw);
+    p+=10+len;
+   }
+  }
+ }
+ if(b.length>=12&&ascii(0,4)==='RIFF'&&ascii(8,4)==='WAVE'){
+  // I campi INFO possono essere successivi al contenuto audio e quindi assenti dal primo MB.
+  for(let p=12;p+12<b.length;){
+   const tag=ascii(p,4),size=v.getUint32(p+4,true);if(size>b.length-p-8||size>10000000)break;
+   if(tag==='LIST'&&ascii(p+8,4)==='INFO'){
+    for(let q=p+12;q+8<p+8+size;){
+     const id=ascii(q,4),n=v.getUint32(q+4,true);if(n>size||q+8+n>p+8+size)break;
+     const value=clean(new TextDecoder().decode(b.subarray(q+8,q+8+n)));
+     if(id==='INAM')title=value;if(id==='IART')artist=value;
+     q+=8+n+(n%2);
+    }
+   }
+   p+=8+size+(size%2);
+  }
+ }
+ return {title,artist};
+}
+function setIdentity(t,a,source){
+ const track=clean(t),singer=clean(a);
+ if(track){catalogTitle.value=track;}
+ if(singer){catalogArtist.value=singer;}
+ if(window.LNZMusicGuard?.setTextIdentityVerified)window.LNZMusicGuard.setTextIdentityVerified(track,singer);
+ if(track||singer)resultStatus.textContent=source+' · Sono dati descrittivi, non un riconoscimento dal suono.';
+}
+picker.addEventListener('change',async()=>{
+ const run=++metadataRun;
+ resultList.replaceChildren();catalogTitle.value='';catalogArtist.value='';resultStatus.textContent='Nessuna ricerca online avviata.';
+ const f=picker.files?.[0];if(!f)return;
+ const sep=niceName(f.name).match(/^(.*?)\s+[-–]\s+(.*?)$/);
+ if(sep)setIdentity(sep[2],sep[1],'Titolo/artista proposti dal nome file');
+ try{const m=await metadata(f);if(run!==metadataRun)return;
+ if(m.title||m.artist)setIdentity(m.title||catalogTitle.value,m.artist||catalogArtist.value,'Tag presenti nel file');
+ }catch(e){console.warn('Metadati non leggibili:',e);}
+});
+$('lnz-catalog-search').addEventListener('click',async()=>{
+ const title=clean(catalogTitle.value),artist=clean(catalogArtist.value);
+ if(title.length<2){resultStatus.textContent='Per cercare una registrazione serve il titolo. Questo modulo non ascolta il brano.';return;}
+ const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),14000);
+ const btn=$('lnz-catalog-search');btn.disabled=true;resultList.replaceChildren();resultStatus.textContent='Cerco su MusicBrainz...';
+ try{
+  const term='recording:"'+title.replace(/[^\p{L}\p{N} .'-]/gu,' ').trim()+'"'+(artist.length>1?' AND artist:"'+artist.replace(/[^\p{L}\p{N} .'-]/gu,' ').trim()+'"':'');
+  const u='https://musicbrainz.org/ws/2/recording/?'+new URLSearchParams({query:term,fmt:'json',limit:'10'});
+  const response=await fetch(u,{headers:{Accept:'application/json'},signal:controller.signal});
+  if(!response.ok)throw Error('MusicBrainz HTTP '+response.status);
+  const data=await response.json();
+  const matches=Array.isArray(data.recordings)?data.recordings:[];
+  resultStatus.textContent=matches.length+' registrazioni nel risultato. La corrispondenza è testuale, non dal suono.';
+  matches.slice(0,10).forEach(rec=>{
+   const title=clean(rec.title),names=(rec['artist-credit']||[]).filter(x=>x&&typeof x==='object'&&x.name).map(x=>x.name).join(' / ');
+   const item=document.createElement('li'),head=document.createElement('strong'),meta=document.createElement('small');
+   head.textContent=title||'Senza titolo';meta.textContent=clean(names)+' · punteggio ricerca '+String(rec.score??'N/D')+'/100';
+   item.append(head,meta);
+   if(/^[a-f0-9-]{36}$/i.test(rec.id||'')){
+    const link=document.createElement('a');link.href='https://musicbrainz.org/recording/'+rec.id;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Apri scheda MusicBrainz';item.append(link);
+   }
+   resultList.appendChild(item);
+  });
+  if(!matches.length)resultStatus.textContent='Nessuna registrazione trovata per i termini indicati. Non significa che il brano sia originale o sconosciuto.';
+ }catch(err){resultStatus.textContent='Ricerca non riuscita: '+String(err.message||err)+' · Riprova con Internet attivo.';}
+ finally{clearTimeout(timer);btn.disabled=false;}
+});
+$('lnz-import-lyrics').addEventListener('click',()=>{
+ const src=$('lnz-external-lyrics').value.trim();
+ if(!src){$('lnz-import-status').textContent='Incolla prima un testo.';return;}
+ $('lyrics').value=src;$('lyricsPanel').hidden=false;
+ $('lyricsStatus').textContent='Testo importato, non verificato. Se vuoi sincronizzarlo importa un file LRC/SRT nel pannello Karaoke.';
+ $('lnz-import-status').textContent='Testo importato nella nostra app.';
+ $('lyricsPanel').scrollIntoView({behavior:'smooth'});
+});
+$('lnz-refresh').addEventListener('click',async()=>{
+ const s=$('lnz-build-status');s.textContent='Controllo aggiornamenti della nostra app...';
+ try{
+  if('serviceWorker' in navigator){
+   const regs=await navigator.serviceWorker.getRegistrations();
+   for(const reg of regs){
+    if(reg.scope.startsWith(location.origin+'/LNZ-MUSIC-GUARD/'))await reg.unregister();
+   }
+  }
+  // Ricarica di rete. La pagina potrebbe perdere i file selezionati e le bozze non salvate.
+  location.href=location.pathname+'?release=06&t='+Date.now();
+ }catch(e){s.textContent='Aggiornamento non riuscito: apri il sito da Chrome e ricarica.';}
+});
 })();
 </script>
-</body> 
+<script>
+/* LNZ MUSIC GUARD v0.6 ritmo stimato locale: algoritmo di autocorrelazione dell'inviluppo RMS */
+(()=>{
+ 'use strict';
+ const filePicker=document.getElementById('file'),go=document.getElementById('lnz-bpm-start'),status=document.getElementById('lnz-bpm-status'),box=document.getElementById('lnz-bpm-metrics');
+ let active=0;
+ filePicker.addEventListener('change',()=>{active++;status.textContent='Carica il brano e premi Stima BPM.';box.replaceChildren();});
+ function metric(label,value){const outer=document.createElement('div');outer.className='metric';const t=document.createElement('span');t.textContent=label;const v=document.createElement('strong');v.textContent=value;outer.append(t,v);box.append(outer);}
+ function calc(buffer){
+  const length=Math.min(buffer.duration,180),fs=buffer.sampleRate,step=Math.max(1,Math.round(fs/100)),N=Math.floor(length*fs/step),channels=Math.min(buffer.numberOfChannels,2);
+  const samples=Array.from({length:channels},(_,i)=>buffer.getChannelData(i));
+  const envelope=new Float32Array(N);
+  for(let j=0;j<N;j++){
+   const lo=j*step,hi=Math.min(buffer.length,(j+1)*step);let sum=0,count=0;
+   for(let i=lo;i<hi;i+=Math.max(1,Math.floor(step/15))){let x=0;for(const c of samples)x+=c[i];x/=channels;sum+=x*x;count++}
+   envelope[j]=Math.sqrt(sum/Math.max(1,count));
+  }
+  const onset=new Float32Array(N);let short=0;
+  for(let i=0;i<N;i++){
+   short=short*.88+envelope[i]*.12;
+   onset[i]=Math.max(0,envelope[i]-short);
+  }
+  const avg=onset.reduce((a,b)=>a+b,0)/Math.max(N,1);
+  const max=Math.max(...Array.from(onset.slice(0,Math.min(1000,N))));
+  if(N<1500 || avg<.00006 || max<.001)return null;
+  const score=lag=>{
+   let cross=0,aa=0,bb=0;
+   for(let i=lag;i<N;i+=2){const a=onset[i]-avg,b=onset[i-lag]-avg;cross+=a*b;aa+=a*a;bb+=b*b}
+   return cross/Math.sqrt(Math.max(1e-18,aa*bb));
+  };
+  const candidates=[];
+  for(let lag=33;lag<=100;lag++){const val=score(lag);candidates.push({lag,val,bpm:6000/lag});}
+  candidates.sort((a,b)=>b.val-a.val);
+  const best=candidates[0];
+  if(!best||best.val<.035)return null;
+  const confidence=best.val>=.28?'moderata':best.val>=.13?'bassa':'molto bassa';
+  return {bpm:best.bpm,confidence,agreement:best.val};
+ }
+ go.addEventListener('click',async()=>{
+  const f=filePicker.files?.[0];if(!f){status.textContent='Seleziona prima un file audio.';return;}
+  const run=++active;go.disabled=true;box.replaceChildren();status.textContent='Analizzo le variazioni ritmiche, attendi...';
+  let ac;
+  try {
+    const AudioCtor=window.AudioContext||window.webkitAudioContext;
+    if(!AudioCtor)throw Error('Web Audio non supportato');
+    const existing=typeof audioDecoded!=='undefined'?audioDecoded:null;
+    let buf=existing;
+    if(!buf){ac=new AudioCtor();buf=await ac.decodeAudioData(await f.arrayBuffer());}
+    const res=calc(buf);if(run!==active)return;
+    if(!res){status.textContent='BPM non affidabile su questo brano. Non inventiamo un numero.';return;}
+    metric('BPM stimato',res.bpm.toFixed(1));metric('Affidabilità indicativa',res.confidence);metric('Possibile tempo dimezzato', (res.bpm/2).toFixed(1));
+    status.textContent='Stima da transienti di '+Math.round(Math.min(buf.duration,180))+' secondi. Non certifica il tempo musicale, la metrica o le battute.';
+  }catch(e){if(run===active)status.textContent='Analisi ritmica non riuscita: '+String(e.message||e);}
+  finally{if(ac)await ac.close().catch(()=>{});go.disabled=false;}
+ });
+})();
+</script>
+</body>
 </html>
